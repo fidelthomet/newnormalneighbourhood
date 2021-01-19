@@ -1,0 +1,32 @@
+$spacing: 2rem;
+$font-size: 100%;
+
+$color-accent: #FF4200;
+$color-accent-dark: #6D1C00;
+$color-white: #FFFFFF;
+$color-light-gray: #ECECEC;
+$color-gray: #999999;
+$color-pale-gray: #F8F8F8;
+$color-deep-gray: #222222;
+$color-dark-gray: #505050;
+$color-black: #000000;
+
+$transition: 0.2s;
+
+:export {
+  accent: $color-accent;
+  white: $color-white;
+  black: $color-black;
+}
+
+@mixin max-width($size) {
+  @media screen and (max-width: $size - 1px) {
+    @content;
+  }
+}
+
+@mixin min-width($size) {
+  @media screen and (min-width: $size) {
+    @content;
+  }
+}

@@ -1,0 +1,31 @@
+@import "normalize-scss";
+@import "global";
+@import "typo";
+
+
+html {
+  box-sizing: border-box;
+  *, *:before, *:after {
+    box-sizing: inherit;
+    margin: 0;
+    padding: 0;
+  }
+
+  font: normal normal #{$font-size}/1.25 "Firs", sans-serif;
+  font-feature-settings: "ss01", "ss03", "cv10", "calt", "kern";
+  color: $color-black;
+  // background: $color-pale-gray;
+}
+
+h1 {
+  color: $color-accent;
+  font-style: italic;
+  font-size: 2em;
+  line-height: 1.125;
+}
+
+h2 {
+  font-size: 1em;
+  font-weight: normal;
+  text-transform: uppercase;
+}
