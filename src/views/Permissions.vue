@@ -6,6 +6,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 import HomeChallenges from '../components/HomeChallenges.vue'
 import HomeIntro from '../components/HomeIntro.vue'
 export default {
@@ -13,6 +14,12 @@ export default {
   components: {
     HomeIntro,
     HomeChallenges
+  },
+  mounted () {
+    console.log(this.$route.params.challenge)
+  },
+  methods: {
+    ...mapActions('main', ['init'])
   }
 }
 </script>

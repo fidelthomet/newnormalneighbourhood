@@ -15,6 +15,26 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
   },
   {
+    path: '/challenge/:challenge',
+    name: 'Challenge',
+    component: () => import(/* webpackChunkName: "about" */ '../views/Challenge.vue')
+  },
+  {
+    path: '/challenge/:challenge/permissions',
+    name: 'Permissions',
+    component: () => import(/* webpackChunkName: "about" */ '../views/Permissions.vue')
+  },
+  {
+    path: '/challenge/:challenge/form',
+    name: 'Form',
+    component: () => import(/* webpackChunkName: "about" */ '../views/Form.vue')
+  },
+  {
+    path: '/challenge/:challenge/thanks',
+    name: 'Thanks',
+    component: () => import(/* webpackChunkName: "about" */ '../views/Thanks.vue')
+  },
+  {
     path: '/:pathMatch(.*)',
     component: () => import(/* webpackChunkName: "about" */ '../views/404.vue'),
     meta: {
