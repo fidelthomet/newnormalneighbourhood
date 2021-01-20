@@ -9,10 +9,7 @@
 
 <script>
 export default {
-  name: 'the-menu',
-  props: {
-    msg: String
-  }
+  name: 'the-menu'
 }
 </script>
 
