@@ -1,4 +1,4 @@
-$spacing: 2rem;
+$spacing: 1rem;
 $font-size: 100%;
 
 $color-accent: #FF4200;
@@ -12,6 +12,8 @@ $color-dark-gray: #505050;
 $color-black: #000000;
 
 $transition: 0.2s;
+
+$border-radius: $spacing;
 
 :export {
   accent: $color-accent;
