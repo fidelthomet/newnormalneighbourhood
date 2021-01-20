@@ -6,5 +6,6 @@ module.exports = {
         .filename('[name].[hash].js')
         .end()
     }
-  }
+  },
+  devServer: { https: true }
 }

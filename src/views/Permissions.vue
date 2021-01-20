@@ -1,25 +1,22 @@
 <template>
-  <div class="home">
-    <home-intro/>
-    <home-challenges/>
+  <div class="permissions">
+    <challenge-permissions :challenge="challenge"/>
   </div>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-import HomeChallenges from '../components/HomeChallenges.vue'
-import HomeIntro from '../components/HomeIntro.vue'
+import { mapState } from 'vuex'
+import ChallengePermissions from '../components/ChallengePermissions.vue'
 export default {
-  name: 'Home',
+  name: 'permissions',
   components: {
-    HomeIntro,
-    HomeChallenges
+    ChallengePermissions
   },
-  mounted () {
-    console.log(this.$route.params.challenge)
-  },
-  methods: {
-    ...mapActions('main', ['init'])
+  computed: {
+    ...mapState('api', ['challenges']),
+    challenge () {
+      return this.challenges?.find(({ _id }) => _id === this.$route.params.challenge)
+    }
   }
 }
 </script>
