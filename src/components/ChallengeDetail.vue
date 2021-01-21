@@ -3,7 +3,7 @@
       <div class="description">
         {{challenge?.description}}
       </div>
-      <base-button :to="`/challenge/${challenge._id}/permissions`">continue</base-button>
+      <base-button :to="`/challenge/${challenge?._id}/contribute`">contribute</base-button>
     </div>
 </template>
 

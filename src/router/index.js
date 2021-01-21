@@ -20,9 +20,9 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/Challenge.vue')
   },
   {
-    path: '/challenge/:challenge/permissions',
-    name: 'Permissions',
-    component: () => import(/* webpackChunkName: "about" */ '../views/Permissions.vue')
+    path: '/challenge/:challenge/contribute',
+    name: 'Contribute',
+    component: () => import(/* webpackChunkName: "about" */ '../views/Contribute.vue')
   },
   {
     path: '/challenge/:challenge/form',
