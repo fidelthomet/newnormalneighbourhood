@@ -1,0 +1,24 @@
+@mixin max-width($device) {
+  @media screen and (max-width: $device - 1px) {
+    @content;
+  }
+}
+
+@mixin min-width($device) {
+  @media screen and (min-width: $device) {
+    @content;
+  }
+}
+
+@mixin backdrop-blur {
+  @supports (backdrop-filter: blur(2vw)) {
+    backdrop-filter: blur(2vw);
+    @content;
+  }
+}
+
+@mixin supports-backdrop-blur {
+  @supports (backdrop-filter: blur(2vw)) {
+    @content;
+  }
+}

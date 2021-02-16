@@ -1,28 +1,27 @@
 @font-face {
-	font-family: 'Eingrantch';
-	src: url('~@/assets/fonts/eingrantch-mono-semi-bold.woff2') format('woff2');
-	font-weight: normal;
-	font-style: normal;
-}
-
-
-@font-face {
 	font-family: 'Firs';
 	src: url('~@/assets/fonts/tt-firs-neue-regular.woff2') format('woff2');
-	font-weight: normal;
+	font-weight: 500;
 	font-style: normal;
 }
 
 @font-face {
 	font-family: 'Firs';
 	src: url('~@/assets/fonts/tt-firs-neue-bold.woff2') format('woff2');
-	font-weight: bold;
+	font-weight: 700;
 	font-style: normal;
 }
 
 @font-face {
 	font-family: 'Firs';
-	src: url('~@/assets/fonts/tt-firs-neue-black-italic.woff2') format('woff2');
-	font-weight: bold;
-	font-style: italic;
+	src: url('~@/assets/fonts/tt-firs-neue-extrabold.woff2') format('woff2');
+	font-weight: 800;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Firs';
+	src: url('~@/assets/fonts/tt-firs-neue-black.woff2') format('woff2');
+	font-weight: 900;
+	font-style: normal;
 }

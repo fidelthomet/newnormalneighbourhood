@@ -1,8 +1,8 @@
 <template>
   <div class="challenge-detail">
       <!-- <div class="bg" :style="{'background-image': `url(${challenge.img})` }"/> -->
-      <base-image :img="challenge.img" blur fade/>
-      <div class="detail">
+      <base-image :img="speculation?.img"/>
+      <!-- <div class="detail">
         <h2>{{challenge.title}}</h2>
         <div class="button-group">
           <base-button :to="`/${challenge.id}/speculate`">speculate</base-button>
@@ -11,21 +11,24 @@
         <div class="description">
           {{challenge.description}}
         </div>
-      </div>
+      </div> -->
     </div>
 </template>
 
 <script>
-import BaseButton from './BaseButton.vue'
+// import BaseButton from './BaseButton.vue'
 import BaseImage from './BaseImage.vue'
 export default {
-  components: { BaseButton, BaseImage },
-  props: ['challenge'],
+  components: { BaseImage },
+  props: ['challenge', 'speculation'],
   name: 'challenge-detail',
   computed: {
     speculations () {
       return this.$store.getters['api/speculations'](this.challenge.id)
     }
+    // speculation () {
+    //   return this.$store.getters['api/speculations'](this.challenge.id)
+    // }
   }
 }
 </script>

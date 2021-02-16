@@ -15,25 +15,55 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
   },
   {
-    path: '/challenge/:challenge',
+    path: '/:challenge',
     name: 'Challenge',
-    component: () => import(/* webpackChunkName: "about" */ '../views/Challenge.vue')
+    component: () => import(/* webpackChunkName: "about" */ '../views/Challenge.vue'),
+    children: [{
+      path: '',
+      component: () => import(/* webpackChunkName: "about" */ '../components/ChallengeDetail.vue')
+    }, {
+      path: ':speculation',
+      name: 'speculation',
+      component: () => import(/* webpackChunkName: "about" */ '../components/ChallengeSpeculation.vue')
+    }]
+  },
+  // {
+  //   path: '/:challenge/:speculation',
+  //   name: 'speculation',
+  //   component: () => import(/* webpackChunkName: "about" */ '../views/Challenge.vue'),
+  // },
+  {
+    path: '/:challenge/speculate',
+    redirect: to => {
+      // the function receives the target route as the argument
+      // we return a redirect path/location here.
+      // return { path: `/${to.params.challenge}/speculate/0` }
+      return { name: 'speculate', params: { challenge: to.params.challenge, step: '0' } }
+    }
   },
   {
-    path: '/challenge/:challenge/contribute',
-    name: 'Contribute',
+    path: '/:challenge/speculate/:step',
+    name: 'speculate',
     component: () => import(/* webpackChunkName: "about" */ '../views/Contribute.vue')
+    // children: [{
+    //   path: '',
+    //   component: () => import(/* webpackChunkName: "about" */ '../components/ContributePermissions.vue')
+    // }, {
+    //   path: '1',
+    //   name: 'speculate-1',
+    //   component: () => import(/* webpackChunkName: "about" */ '../components/ContributeChat.vue')
+    // }]
   },
-  {
-    path: '/challenge/:challenge/form',
-    name: 'Form',
-    component: () => import(/* webpackChunkName: "about" */ '../views/Form.vue')
-  },
-  {
-    path: '/challenge/:challenge/thanks',
-    name: 'Thanks',
-    component: () => import(/* webpackChunkName: "about" */ '../views/Thanks.vue')
-  },
+  // {
+  //   path: '/challenge/:challenge/form',
+  //   name: 'Form',
+  //   component: () => import(/* webpackChunkName: "about" */ '../views/Form.vue')
+  // },
+  // {
+  //   path: '/challenge/:challenge/thanks',
+  //   name: 'Thanks',
+  //   component: () => import(/* webpackChunkName: "about" */ '../views/Thanks.vue')
+  // },
   {
     path: '/:pathMatch(.*)',
     component: () => import(/* webpackChunkName: "about" */ '../views/404.vue'),

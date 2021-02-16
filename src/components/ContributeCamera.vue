@@ -1,126 +1,186 @@
 <template>
-  <div class="contribute-camera">
-    <div v-show="!img1" class="video-wrapper">
-      <video ref="video" playsinline autoplay :style="videoCover"/>
-    </div>
-    <div v-show="img1" class="edit-wrapper">
-      <img :src="img1"/>
-      <div class="drawing" ref="drawing"/>
-    </div>
-    <div class="buttons">
-      <base-button v-if="!img1" @click="capture">Take Photo</base-button>
-      <base-button v-if="img1" @click="retake">Retake</base-button>
-      <base-button v-if="img1" @click="undo">Undo</base-button>
-    </div>
-    <div class="form">
-      <!-- <div class="label">Title</div> -->
-      <input type="text" v-model="title" placeholder="What did you capture?"/>
-      <!-- <div class="label">Description</div> -->
-      <textarea v-model="description" placeholder="What is the new normal?"/>
-      <base-button @click="submit" :disabled="!enableSubmit">Submit</base-button>
-      {{location.coords.latitude.toFixed(5) }} {{ location.coords.longitude.toFixed(5)}}
-    </div>
+  <div class="contribute-camera" v-if="statusCamera === 'allowed'">
+    <!-- <transition-group name="delay"> -->
+      <div class="video-wrapper">
+        <video ref="video" playsinline autoplay :style="videoCover"/>
+      </div>
+      <div v-show="captured" class="edit-wrapper">
+        <!-- <div class="img" :style="{'background-image': `url(${photo})`}"/> -->
+        <img class="img" :src="photo">
+        <div class="drawing" ref="drawing"/>
+      </div>
+    <!-- </transition-group> -->
+  <!-- <transition name="fade-alt">
+      <div class="buttons"  v-if="draw && pathCount > 0">
+          <base-button @click="undo">Undo</base-button>
+          <base-button @click="submit">submit</base-button>
+      </div>
+</transition> -->
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 import { SvgDrawing } from '@svg-drawing/core'
+// import BaseButton from './BaseButton.vue'
 // import { mapActions, mapGetters } from 'vuex'
-import BaseButton from './BaseButton.vue'
+// import BaseButton from './BaseButton.vue'
 export default {
-  components: { BaseButton },
+  // components: { BaseButton },
+  // components: { BaseButton },
   name: 'contribute-camera',
+  props: {
+    challenge: {
+      type: Object,
+      default () { return {} }
+    }
+  },
   data () {
     return {
       captured: false,
       videoWidth: null,
       videoHeight: null,
-      img1: null,
+      photo: null,
       img2: null,
       drawing: null,
-      title: '',
-      description: '',
-      coords: null
+      draw: false,
+      coords: null,
+      pathCount: 0
     }
   },
   mounted () {
-    const { width, height } = this.camera.getTracks()[0].getSettings()
-    this.videoWidth = width
-    this.videoHeight = height
-    this.$refs.video.srcObject = this.camera
   },
   computed: {
-    ...mapState('device', ['camera', 'location']),
+    ...mapState('device', ['camera', 'location', 'captureWidth', 'captureHeight']),
+    ...mapState('data', ['title', 'description']),
+    ...mapGetters('device', ['statusCamera']),
     videoCover () {
-      return this.videoWidth > this.videoHeight ? { height: '100vw' } : { width: '100vw' }
+      return {
+        'min-width': `${100 * this.videoWidth / this.videoHeight}vh`, // 100 * 16 / 9
+        height: `${100 * this.videoHeight / this.videoWidth}vw`, // 100 * 9 / 16
+        width: '100%',
+        'min-height': '100%'
+      }
+      // return this.videoWidth > this.videoHeight ? { height: '100vmax' } : { width: '100vmax' }
     },
     enableSubmit () {
-      return this.captured && this.img1 && this.drawing && this.coords && this.title && this.description
+      return this.captured && this.photo && this.drawing
     }
   },
   methods: {
+    ...mapActions('api', ['commitSpeculation']),
+    ...mapActions('data', ['wipe']),
+    initCamera () {
+      const { width, height } = this.camera.getTracks()[0].getSettings()
+      this.videoWidth = width
+      this.videoHeight = height
+      if (width === 0 && height === 0) { // Edge case fix (desktop Safari with hdmi-grabber camera)
+        setTimeout(() => { this.initCamera() }, 50)
+      } else {
+        this.$nextTick(() => {
+          this.$refs.video.srcObject = this.camera
+        })
+      }
+    },
     capture () {
+      // console.log('capture')
       this.captured = true
       const video = this.$refs.video
       const canvas = document.createElement('canvas')
-      const captureSize = 2048
-      canvas.width = captureSize
-      canvas.height = captureSize
-      const imageWidth = this.videoWidth > this.videoHeight ? this.videoWidth / this.videoHeight * captureSize : captureSize
-      const imageHeight = this.videoHeight > this.videoWidth ? this.videoHeight / this.videoWidth * captureSize : captureSize
-      const imageX = (captureSize - imageWidth) / 2
-      const imageY = (captureSize - imageHeight) / 2
+      const { captureWidth, captureHeight } = this
+      const { width, height } = this.camera.getTracks()[0].getSettings()
+      // this.videoWidth = width
+      // this.videoHeight = height
+      canvas.width = captureHeight
+      canvas.height = captureWidth
+      const imageWidth = width > height ? width / height * captureWidth : captureHeight
+      const imageHeight = height > width ? height / width * captureHeight : captureWidth
+      // console.log(imageWidth, imageHeight)
+      const imageX = (captureHeight - imageWidth) / 2
+      const imageY = (captureWidth - imageHeight) / 2
       const ctx = canvas.getContext('2d')
       ctx.drawImage(video, imageX, imageY, imageWidth, imageHeight)
-      const imgData = ctx.getImageData(0, 0, captureSize, captureSize)
+      const imgData = ctx.getImageData(0, 0, captureHeight, captureWidth)
       const aPix = imgData.data
       const nPixLen = aPix.length
       for (let nPixel = 0; nPixel < nPixLen; nPixel += 4) {
         aPix[nPixel + 2] = aPix[nPixel + 1] = aPix[nPixel] = (aPix[nPixel] + aPix[nPixel + 1] + aPix[nPixel + 2]) / 3
       }
       ctx.putImageData(imgData, 0, 0)
-      this.img1 = canvas.toDataURL('image/jpeg', 0.7)
+      this.photo = canvas.toDataURL('image/jpeg', 0.7)
       this.drawing = new SvgDrawing(this.$refs.drawing, { delay: 30 })
 
       this.coords = [
         +this.location.coords.latitude.toFixed(5),
         +this.location.coords.longitude.toFixed(5)
       ]
+      this.$emit('next')
     },
     retake () {
       this.captured = false
-      this.img1 = null
+      // this.photo = null
       this.drawing = null
       this.coords = null
     },
     undo () {
+      console.log(1, this.drawing)
+      console.log(this.drawing)
       this.drawing.undo()
+      console.log(this.$refs.drawing.children[0].children.length)
     },
     submit () {
-      console.log('submit')
+      // console.log(this.photo)
+      this.draw = false
+      this.commitSpeculation({
+        scenario: this.challenge.id,
+        photo: this.photo,
+        sketch: [...this.$refs.drawing.children[0].children].map(el => el.getAttribute('d')),
+        coords: this.coords,
+        title: this.title,
+        description: this.description
+      }).then((response) => {
+        this.wipe()
+        this.$router.push({ name: 'speculation', params: { challenge: this.challenge.id, speculation: response.id } })
+      })
+    },
+    checkDrawingState () { // i am really sorry
+      if (!this.draw) return
+      this.pathCount = this.$refs.drawing.children[0].children.length
+      requestAnimationFrame(this.checkDrawingState)
+    }
+  },
+  watch: {
+    statusCamera: {
+      handler (status) {
+        if (status === 'allowed') {
+          this.initCamera()
+        }
+      },
+      immediate: true
+    },
+    draw: {
+      handler (draw) {
+        if (draw) this.checkDrawingState()
+      },
+      immediate: true
     }
   }
-  // watch: {
-  //   'drawing.paths': {
-  //     handler (paths) {
-  //       console.log(paths)
-  //     },
-  //     deep: true
-  //   }
-  // }
 }
 </script>
 
 <style scoped lang="scss">
 @import "@/assets/style/global";
 .contribute-camera {
-  min-height: 100vh;
-  padding: 0 $spacing $spacing $spacing;
+  height: 100%;
+  width: 100vw;
+  // padding: 0 $spacing $spacing $spacing;
   display: flex;
   flex-direction: column;
-  background: $color-accent;
+  // background: $color-accent;
 
+  .video-wrapper, .edit-wrapper {
+    position: absolute;
+  }
   .video-wrapper {
     overflow: hidden;
     display: flex;
@@ -129,18 +189,24 @@ export default {
   }
 
   .video-wrapper, .edit-wrapper {
-    margin: 0 #{-$spacing} #{$spacing};
+    // margin: 0 #{-$spacing} #{$spacing};
     width: 100vw;
-    height: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  img, .drawing {
-    width: 100vw;
-    height: 100vw;
+  .img, .drawing {
+    width: max(100vw, 66.6666vh);
+    height: max(100vh, 150vw);
+    background-size: cover;
+    background-position: center center;
     position: absolute;
   }
 
   .drawing::v-deep {
+    mix-blend-mode: hard-light;
     svg {
       path {
         stroke: $color-accent;
@@ -150,22 +216,30 @@ export default {
   }
 
   video {
+    // background: olive;
+    // transform: scale(0.2);
     filter: saturate(0) contrast(1.5) brightness(1.15);
   }
-  img {
+  .img {
+    // background: olive;
+    // transform: scale(0.9);
+    // width: max(100vw, 66.6666vh);
+    // height: max(100vh, 150vw);
     filter: contrast(1.5) brightness(1.15);
   }
 
   .buttons {
+    position: absolute;
+    bottom: 0px;
     display: flex;
     .base-button {
       // margin-top: $spacing;
       background: $color-white;
-      color: $color-accent;
+      // color: $color-accent;
 
-      + .base-button {
-        margin-left: $spacing;
-      }
+      // + .base-button {
+      //   margin-left: $spacing;
+      // }
     }
   }
 
@@ -201,6 +275,15 @@ export default {
         margin-left: $spacing;
       }
     }
+  }
+  .delay-leave-active.video-wrapper {
+    position: absolute;
+    // width: 100%;
+    transition: opacity 1s 1s;
+  }
+
+  .delay-leave-to {
+    opacity: 0;
   }
 }
 </style>

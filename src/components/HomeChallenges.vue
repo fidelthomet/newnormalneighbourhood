@@ -1,22 +1,28 @@
 <template>
   <div class="home-challenges">
-    <h2>Challenges</h2>
-    <div class="challenges">
-      <challenge-preview v-for="challenge in challenges" :key="challenge._id" v-bind="{challenge}"/>
-    </div>
+    <base-gallery v-if="challenges != null" :items="challenges.length">
+      <template v-slot="{ step }">
+        <transition name="fade">
+          <challenge-detail :key="step" :challenge="challenges[step]"/>
+        </transition>
+      </template>
+    </base-gallery>
   </div>
 </template>
 
 <script>
-import ResizeText from 'vue-resize-text/src/VueResizeText'
 import { mapState } from 'vuex'
-import ChallengePreview from './ChallengePreview.vue'
+import BaseGallery from './BaseGallery.vue'
+import ChallengeDetail from './ChallengeDetail.vue'
 
 export default {
-  components: { ChallengePreview },
+  components: { ChallengeDetail, BaseGallery },
   name: 'home-challenges',
-  directives: {
-    ResizeText
+  props: {
+    step: {
+      type: Number,
+      default: 0
+    }
   },
   computed: {
     ...mapState('api', ['challenges'])
@@ -27,10 +33,9 @@ export default {
 <style scoped lang="scss">
 @import "@/assets/style/global";
 .home-challenges {
-  padding: $spacing;
   display: flex;
   flex-direction: column;
-  color: $color-deep-gray;
+  // color: $color-deep-gray;
 
   .challenges {
     margin-top: $spacing;

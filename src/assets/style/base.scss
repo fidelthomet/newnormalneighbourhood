@@ -11,22 +11,42 @@ html {
     padding: 0;
   }
 
-  font: normal normal #{$font-size}/1.25 "Firs", sans-serif;
+  font: 500 #{$font-size}/1.25 "Firs", sans-serif;
   font-feature-settings: "ss01", "ss03", "cv10", "calt", "kern";
-  color: $color-black;
+  color: $color-white;
+  background: $color-black;
+
+  @include min-width($narrow) {
+    font-size: 22px;
+  }
 }
 
-h1 {
-  color: $color-accent;
-  font-style: italic;
-  font-size: 2em;
+h1,h2 {
+  font-size: 1.8em;
+  font-weight: 800;
   line-height: 1.125;
+
+  @include min-width($extra-narrow) {
+    font-size: 2em;
+  }
+  @include min-width($narrow) {
+    font-size: 3em;
+  }
 }
 
 h2 {
-  font-size: 1em;
-  font-weight: normal;
-  text-transform: uppercase;
+  // font-size: 1em;
+  font-weight: 700;
+  // text-transform: uppercase;
+}
+
+p {
+  max-width: $extra-narrow;
+  hyphens: auto;
+
+  &.no-hyphens {
+    hyphens: none;
+  }
 }
 
 a {

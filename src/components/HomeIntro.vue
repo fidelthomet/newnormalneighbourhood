@@ -1,6 +1,15 @@
 <template>
   <div class="home-intro">
-    <h1 v-resize-text="{ratio:1.2, minFontSize: '30px', maxFontSize: '75px', delay: 200}">New&nbsp;Normal<br>Neighbourhood</h1>
+    <div class="bg"/>
+    <h1>New&nbsp;Normal<br>Neighbourhood</h1>
+    <p class="no-hyphens">
+      explore and contribute situated <br>
+      speculations on local responses <br>
+      to&nbsp;potential future crises
+    </p>
+    <div class="arrow">
+      ↓
+    </div>
   </div>
 </template>
 
@@ -17,16 +26,21 @@ export default {
 <style scoped lang="scss">
 @import "@/assets/style/global";
 .home-intro {
-  min-height: 60vh;
-  padding: $spacing;
+  min-height: 70vh;
+  padding: $spacing * 4 $spacing $spacing $spacing;
   display: flex;
-  align-items: flex-end;
-  background: url("~@/assets/img/estrel.jpg");
-  background-size: cover;
-  background-position: center bottom;
-  text-transform: uppercase;
+  flex-direction: column;
+  background: $color-accent;
+
   h1 {
     width: 100%;
+    margin-bottom: $spacing;
+  }
+  p {
+
+  }
+  .arrow {
+    margin-top: auto;
   }
 }
 </style>

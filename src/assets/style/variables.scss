@@ -1,0 +1,35 @@
+$spacing: 1rem;
+$font-size: 18px;
+
+$extra-narrow: 375px;
+$narrow: 600px;
+$medium: 900px;
+$wide: 1200px;
+$extra-wide: 1700px;
+
+$color-accent: #FF4200;
+$color-accent-dark: #6D1C00;
+$color-white: #FFFFFF;
+$color-light-gray: #ECECEC;
+$color-gray: #999999;
+$color-pale-gray: #F8F8F8;
+$color-deep-gray: #222222;
+$color-dark-gray: #505050;
+$color-black: #000000;
+
+$color-red: red;
+$color-dark-red: darkred;
+$color-green: lightgreen;
+$color-dark-green: green;
+$color-yellow: Gold;
+$color-dark-yellow: DarkGoldenRod;
+
+$transition: 0.2s;
+
+$border-radius: $spacing;
+
+:export {
+  accent: $color-accent;
+  white: $color-white;
+  black: $color-black;
+}
