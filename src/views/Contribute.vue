@@ -1,6 +1,6 @@
 <template>
   <div class="contribute subpage" :style="{height: `${height}px`}">
-    <base-image :img="challenge?.img" :blur="step !== 2 && step !== 4" :tint="step ===  0 || step ===  3">
+    <base-image :img="challenge?.img" :blur="step !== 2 && step !== 4" :tint="step ===  0 || step ===  3" showSlot>
       <contribute-camera v-if="!disableCamera" ref="camera" @next="step = 3" :challenge="challenge"/>
     </base-image>
     <base-progress :progress="step" :items="5"/>

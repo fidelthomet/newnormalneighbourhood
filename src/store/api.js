@@ -6,6 +6,7 @@ export default {
   state: {
     challenges: null,
     speculations: null,
+    speculation: null,
     files
   },
   getters: {
@@ -40,6 +41,18 @@ export default {
             ...speculation,
             img: `${files}/s/${speculation._id}.jpg`
           })))
+      })
+    },
+    async fetchSpeculation ({ commit }, id) {
+      commit('set', { key: 'speculation', value: null })
+      commit('set', {
+        key: 'speculation',
+        value: await fetch(`${api}/speculation/${id}`)
+          .then(r => r.json())
+          .then(d => d.map(speculation => ({
+            ...speculation,
+            img: `${files}/s/${speculation._id}.jpg`
+          }))[0])
       })
     },
     async commitSpeculation ({ commit }, d) {

@@ -16,10 +16,10 @@ const routes = [
   },
   {
     path: '/:challenge',
-    name: 'Challenge',
     component: () => import(/* webpackChunkName: "about" */ '../views/Challenge.vue'),
     children: [{
       path: '',
+      name: 'scenario',
       component: () => import(/* webpackChunkName: "about" */ '../components/ChallengeDetail.vue')
     }, {
       path: ':speculation',

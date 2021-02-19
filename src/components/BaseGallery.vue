@@ -18,6 +18,10 @@ export default {
     items: {
       type: Number,
       default: 4
+    },
+    pause: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -38,9 +42,13 @@ export default {
   },
   methods: {
     animate (t) {
-      if (this.stopped) return
+      if (this.stopped || this.pause) return
       if (this.time != null) {
         const delta = (t - this.time) / this.duration
+        if (this.progress + delta >= this.items) {
+          console.log('emit::next')
+          this.$emit('next')
+        }
         this.progress = (this.progress + delta) % this.items
       }
       this.time = t
@@ -48,9 +56,11 @@ export default {
     },
     back () {
       this.progress = (this.step + this.items - 1) % this.items
+      if (this.progress === this.items - 1) this.$emit('prev')
     },
     next () {
       this.progress = (this.step + 1) % this.items
+      if (this.progress === 0) this.$emit('next')
     },
     stopp () {
       this.stopped = true

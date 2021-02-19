@@ -130,11 +130,13 @@ export default {
     },
     submit () {
       // console.log(this.photo)
+      const rect = this.$refs.drawing.children[0].getBoundingClientRect()
       this.draw = false
       this.commitSpeculation({
         scenario: this.challenge.id,
         photo: this.photo,
         sketch: [...this.$refs.drawing.children[0].children].map(el => el.getAttribute('d')),
+        sketchDimensions: [rect.width, rect.height],
         coords: this.coords,
         title: this.title,
         description: this.description

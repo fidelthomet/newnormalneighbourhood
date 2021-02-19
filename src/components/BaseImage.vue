@@ -2,7 +2,7 @@
   <div class="base-image">
     <transition-group name="fade">
       <div v-if="img" key="img" class="img" :class="{blur}" :style="{'background-image': `url(${img})` }"/>
-      <div class="slot" key="slot" :class="{blur}">
+      <div v-if="showSlot" class="slot" key="slot" :class="{blur}">
         <slot/>
       </div>
       <div v-if="blur" key="blur" class="backdrop-blur"/>
@@ -21,6 +21,10 @@ export default {
     img: {
       type: String,
       default: null
+    },
+    showSlot: {
+      type: Boolean,
+      default: false
     },
     blur: {
       type: Boolean,
