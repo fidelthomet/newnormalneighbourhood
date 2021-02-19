@@ -34,7 +34,8 @@ export default {
     this.initCamera()
   },
   computed: {
-    ...mapState('device', ['camera', 'captureWidth', 'captureHeight']),
+    ...mapState('device', ['camera']),
+    ...mapState('config', ['imgWidth', 'imgHeight']),
     ...mapStateReactive('data', ['photo']),
     videoCover () {
       return {
@@ -65,20 +66,20 @@ export default {
       this.captured = true
       const video = this.$refs.video
       const canvas = document.createElement('canvas')
-      const { captureWidth, captureHeight } = this
+      const { imgHeight, imgWidth } = this
       const { width, height } = this.camera.getTracks()[0].getSettings()
       // this.videoWidth = width
       // this.videoHeight = height
-      canvas.width = captureHeight
-      canvas.height = captureWidth
-      const imageWidth = width > height ? width / height * captureWidth : captureHeight
-      const imageHeight = height > width ? height / width * captureHeight : captureWidth
+      canvas.width = imgWidth
+      canvas.height = imgHeight
+      const imageWidth = width > height ? width / height * imgHeight : imgWidth
+      const imageHeight = height > width ? height / width * imgWidth : imgHeight
       // console.log(imageWidth, imageHeight)
-      const imageX = (captureHeight - imageWidth) / 2
-      const imageY = (captureWidth - imageHeight) / 2
+      const imageX = (imgWidth - imageWidth) / 2
+      const imageY = (imgHeight - imageHeight) / 2
       const ctx = canvas.getContext('2d')
       ctx.drawImage(video, imageX, imageY, imageWidth, imageHeight)
-      const imgData = ctx.getImageData(0, 0, captureHeight, captureWidth)
+      const imgData = ctx.getImageData(0, 0, imgWidth, imgHeight)
       const aPix = imgData.data
       const nPixLen = aPix.length
       for (let nPixel = 0; nPixel < nPixLen; nPixel += 4) {

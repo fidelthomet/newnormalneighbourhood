@@ -4,6 +4,7 @@ import data from './data'
 import view from './view'
 import device from './device'
 import main from './main'
+import config from './config'
 
 export default createStore({
   modules: {
@@ -11,6 +12,7 @@ export default createStore({
     api,
     data,
     view,
-    device
+    device,
+    config
   }
 })

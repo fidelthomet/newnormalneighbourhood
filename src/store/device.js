@@ -6,9 +6,7 @@ export default {
     cameraError: null,
     location: null,
     locationRequested: false,
-    locationError: null,
-    captureWidth: 1800,
-    captureHeight: 1200
+    locationError: null
   },
   mutations: {
     set (state, obj) {
@@ -38,13 +36,14 @@ export default {
     update ({ commit }, d) {
       commit('set', d)
     },
-    async allowCamera ({ commit, state }) {
+    async allowCamera ({ commit, state, rootState }) {
       commit('set', { cameraRequested: true })
       const options = {
         video: {
-          width: state.captureWidth,
-          height: state.captureHeight,
-          aspectRatio: state.captureWidth / state.captureHeight,
+          // width and height are flipped on mobile devices in portrait mode
+          width: rootState.config.imgHeight,
+          height: rootState.config.imgWidth,
+          aspectRatio: rootState.config.imgHeight / rootState.config.imgWidth,
           facingMode: {
             ideal: 'environment'
           }
