@@ -16,15 +16,16 @@ export default {
     }
   },
   mutations: {
-    set (state, { key, value }) {
-      state[key] = value
+    set (state, obj) {
+      Object.keys(obj).forEach(key => {
+        state[key] = obj[key]
+      })
     }
   },
   actions: {
     async fetchChallenges ({ commit }) {
       commit('set', {
-        key: 'challenges',
-        value: await fetch(`${api}/challenges`)
+        challenges: await fetch(`${api}/challenges`)
           .then(r => r.json())
           .then(d => d.map(challenge => ({
             ...challenge,
@@ -34,8 +35,7 @@ export default {
     },
     async fetchSpeculations ({ commit }) {
       commit('set', {
-        key: 'speculations',
-        value: await fetch(`${api}/speculations`)
+        speculations: await fetch(`${api}/speculations`)
           .then(r => r.json())
           .then(d => d.map(speculation => ({
             ...speculation,
@@ -44,10 +44,9 @@ export default {
       })
     },
     async fetchSpeculation ({ commit }, id) {
-      commit('set', { key: 'speculation', value: null })
+      commit('set', { speculation: null })
       commit('set', {
-        key: 'speculation',
-        value: await fetch(`${api}/speculation/${id}`)
+        speculation: await fetch(`${api}/speculation/${id}`)
           .then(r => r.json())
           .then(d => d.map(speculation => ({
             ...speculation,

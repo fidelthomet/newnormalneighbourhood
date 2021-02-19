@@ -6,7 +6,7 @@ export default function (namespace, props) {
         return this.$store.state[namespace][key]
       },
       set (value) {
-        this.$store.dispatch(`${namespace}/update`, { value, key })
+        this.$store.dispatch(`${namespace}/update`, Object.fromEntries([[key, value]]))
       }
     }
   })

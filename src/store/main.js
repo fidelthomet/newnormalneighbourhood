@@ -4,15 +4,17 @@ export default {
     ready: false
   },
   mutations: {
-    set (state, { key, value }) {
-      state[key] = value
+    set (state, obj) {
+      Object.keys(obj).forEach(key => {
+        state[key] = obj[key]
+      })
     }
   },
   actions: {
     async init ({ dispatch, commit }) {
       await dispatch('api/fetchChallenges', null, { root: true })
       await dispatch('api/fetchSpeculations', null, { root: true })
-      commit('set', { key: 'ready', value: true })
+      commit('set', { ready: true })
     }
   },
   modules: {
