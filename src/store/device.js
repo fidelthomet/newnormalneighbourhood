@@ -6,7 +6,9 @@ export default {
     cameraError: null,
     location: null,
     locationRequested: false,
-    locationError: null
+    locationError: null,
+    height: 0,
+    width: 0
   },
   mutations: {
     set (state, obj) {

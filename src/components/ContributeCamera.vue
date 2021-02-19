@@ -1,6 +1,6 @@
 <template>
   <div class="contribute-camera">
-    <div class="video-wrapper">
+    <div ref="wrapper" class="video-wrapper">
       <video ref="video" playsinline autoplay :style="videoCover"/>
     </div>
   </div>
@@ -22,6 +22,8 @@ export default {
       captured: false,
       videoWidth: null,
       videoHeight: null,
+      wrapperWidth: null,
+      wrapperHeight: null,
       // photo: null,
       img2: null,
       drawing: null,
@@ -32,17 +34,16 @@ export default {
   },
   mounted () {
     this.initCamera()
+    this.resize()
   },
   computed: {
-    ...mapState('device', ['camera']),
+    ...mapState('device', ['camera', 'width', 'height']),
     ...mapState('config', ['imgWidth', 'imgHeight']),
     ...mapStateReactive('data', ['photo']),
     videoCover () {
       return {
-        'min-width': `${100 * this.videoWidth / this.videoHeight}vh`, // 100 * 16 / 9
-        height: `${100 * this.videoHeight / this.videoWidth}vw`, // 100 * 9 / 16
-        width: '100%',
-        'min-height': '100%'
+        width: `max(100%, ${this.wrapperHeight * this.videoWidth / this.videoHeight}px)`,
+        height: `max(100%, ${this.wrapperWidth * this.videoHeight / this.videoWidth}px)`
       }
     }
   },
@@ -62,7 +63,6 @@ export default {
       }
     },
     capture () {
-      // console.log('capture')
       this.captured = true
       const video = this.$refs.video
       const canvas = document.createElement('canvas')
@@ -95,9 +95,25 @@ export default {
       // this.photo = null
       // this.drawing = null
       // this.coords = null
+    },
+    resize () {
+      if (this.$refs.wrapper == null) return
+      const rect = this.$refs.wrapper.getBoundingClientRect()
+      this.wrapperWidth = rect.width
+      this.wrapperHeight = rect.height
     }
   },
   watch: {
+    width: {
+      handler () {
+        this.resize()
+      }
+    },
+    height: {
+      handler () {
+        this.resize()
+      }
+    }
     // statusCamera: {
     //   handler (status) {
     //     if (status === 'allowed') {
@@ -118,6 +134,8 @@ export default {
   // padding: 0 $spacing $spacing $spacing;
   display: flex;
   flex-direction: column;
+  align-items: center;
+    justify-content: center;
   // background: $color-accent;
 
   .video-wrapper {
@@ -132,8 +150,10 @@ export default {
 
   .video-wrapper {
     // margin: 0 #{-$spacing} #{$spacing};
-    width: 100vw;
-    height: 100vh;
+    // width: 100vw;
+    // height: 100vh;
+    width: max(100vw, 66.6666vh);
+    height: max(100vh, 150vw);
     display: flex;
     align-items: center;
     justify-content: center;

@@ -71,7 +71,7 @@ export default {
 
     &.img {
       background-size: cover;
-      background-position: center bottom;
+      background-position: center center;
       filter: saturate(0) contrast(1.5) brightness(1.15);
     }
     &.blur {

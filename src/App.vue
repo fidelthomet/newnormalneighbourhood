@@ -17,7 +17,7 @@ import 'vue-resize/dist/vue-resize.css'
 export default {
   components: { TheMenu },
   data () {
-    return { resizeThrottle: null }
+    return { resizeDebounce: null }
   },
   created () {
     addEventListener('resize', this.resize)
@@ -30,7 +30,7 @@ export default {
     addEventListener('resize', this.resize)
   },
   computed: {
-    ...mapStateReactive('device', ['height']),
+    ...mapStateReactive('device', ['height', 'width']),
     ...mapState('main', ['ready'])
   },
   methods: {
@@ -41,9 +41,10 @@ export default {
     resize () {
       // this.height = innerHeight
       // console.log('a', innerHeight)
-      clearTimeout(this.resizeThrottle)
-      this.resizeThrottle = setTimeout(() => {
+      clearTimeout(this.resizeDebounce)
+      this.resizeDebounce = setTimeout(() => {
         this.height = innerHeight
+        this.width = innerWidth
       }, 100)
     }
   }

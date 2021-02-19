@@ -1,13 +1,13 @@
 <template>
   <div class="contribute subpage" :style="{height: `${height}px`}">
-    <base-image :img="photo || challenge?.img" :blur="step !== 2 && step !== 4" :tint="step ===  0 || step ===  3" showSlot>
+    <base-image :img="photo || challenge?.img" :blur="step !== 2 && step !== 3" :tint="step ===  0 || step ===  4" showSlot>
       <contribute-camera v-if="!disableCamera && (step === 1 || step === 2)" ref="camera" @next="step = 3" :challenge="challenge"/>
     </base-image>
     <base-progress :progress="step" :items="5"/>
     <div class="content" :class="{blend: step !== 2}">
       <!-- <router-view :challenge="challenge" @next="next"/> -->
       <transition-group name="fade">
-        <contribute-permissions v-if="step === 0" key="permissions" @next="step = 1" :challenge="challenge"/>
+        <contribute-permissions v-if="step === 0" key="permissions" @next="step = 2" :challenge="challenge"/>
         <contribute-chat v-if="step === 1" @next="step = 2" :challenge="challenge"/>
         <div v-if="step === 2" key="capture" class="capture">
           <contribute-task msg="Capture a vulnerability" icon="camera"/>
@@ -19,6 +19,7 @@
           </div>
         </div>
         <contribute-text v-if="step === 3" key="text" @next="step = 4"/>
+        <contribute-sketch v-if="step === 4" key="sketch"/>
         <!-- <div v-if="step === 4" key="sketch" class="sketch">
           <contribute-task msg="Sketch in Opportunity" icon="camera"/>
           <transition name="fade-alt">
@@ -41,6 +42,7 @@ import BaseProgress from '../components/BaseProgress.vue'
 import ContributeCamera from '../components/ContributeCamera.vue'
 import ContributeChat from '../components/ContributeChat.vue'
 import ContributePermissions from '../components/ContributePermissions.vue'
+import ContributeSketch from '../components/ContributeSketch.vue'
 import ContributeTask from '../components/ContributeTask.vue'
 import ContributeText from '../components/ContributeText.vue'
 export default {
@@ -52,7 +54,8 @@ export default {
     ContributeChat,
     ContributeCamera,
     ContributeTask,
-    ContributeText
+    ContributeText,
+    ContributeSketch
     // BaseButton
   },
   data () {
@@ -152,7 +155,7 @@ export default {
     height: 100%;
     pointer-events: none;
     &.blend {
-      mix-blend-mode: hard-light;
+      // mix-blend-mode: hard-light;
     }
     > * {
       pointer-events: all;
