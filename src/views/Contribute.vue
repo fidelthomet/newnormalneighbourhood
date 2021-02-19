@@ -1,7 +1,7 @@
 <template>
   <div class="contribute subpage" :style="{height: `${height}px`}">
-    <base-image :img="challenge?.img" :blur="step !== 2 && step !== 4" :tint="step ===  0 || step ===  3" showSlot>
-      <contribute-camera v-if="!disableCamera" ref="camera" @next="step = 3" :challenge="challenge"/>
+    <base-image :img="photo || challenge?.img" :blur="step !== 2 && step !== 4" :tint="step ===  0 || step ===  3" showSlot>
+      <contribute-camera v-if="!disableCamera && (step === 1 || step === 2)" ref="camera" @next="step = 3" :challenge="challenge"/>
     </base-image>
     <base-progress :progress="step" :items="5"/>
     <div class="content" :class="{blend: step !== 2}">
@@ -19,7 +19,7 @@
           </div>
         </div>
         <contribute-text v-if="step === 3" key="text" @next="step = 4"/>
-        <div v-if="step === 4" key="sketch" class="sketch">
+        <!-- <div v-if="step === 4" key="sketch" class="sketch">
           <contribute-task msg="Sketch in Opportunity" icon="camera"/>
           <transition name="fade-alt">
             <div class="buttons"  v-if="$refs.camera.draw && $refs.camera.pathCount > 0">
@@ -27,7 +27,7 @@
                 <base-button @click="$refs.camera.submit">submit</base-button>
             </div>
           </transition>
-        </div>
+        </div> -->
       </transition-group>
     </div>
   </div>
@@ -35,7 +35,7 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex'
-import BaseButton from '../components/BaseButton.vue'
+// import BaseButton from '../components/BaseButton.vue'
 import BaseImage from '../components/BaseImage.vue'
 import BaseProgress from '../components/BaseProgress.vue'
 import ContributeCamera from '../components/ContributeCamera.vue'
@@ -52,8 +52,8 @@ export default {
     ContributeChat,
     ContributeCamera,
     ContributeTask,
-    ContributeText,
-    BaseButton
+    ContributeText
+    // BaseButton
   },
   data () {
     return {
@@ -65,6 +65,7 @@ export default {
   },
   computed: {
     ...mapState('api', ['challenges']),
+    ...mapState('data', ['photo']),
     ...mapState('device', ['height']),
     ...mapGetters('device', ['permissionsGranted']),
     challenge () {
@@ -94,7 +95,7 @@ export default {
     },
     retake () {
       this.step = 2
-      this.$refs.camera.retake()
+      // this.$refs.camera.retake()
     }
     // resize () {
     //   // this.height = innerHeight
@@ -110,19 +111,20 @@ export default {
     step: {
       handler () {
         // window.scrollTo(0, document.body.scrollHeight)
+        console.log(this.step, this.maxStep)
         if (this.step > this.maxStep) {
-          this.step = this.maxStep
+          // this.step = this.maxStep
           return
         }
         if (this.step === 2 && this.maxStep > 2) {
-          this.$refs.camera.retake()
+          // this.$refs.camera.retake()
         }
         if (this.step === 3) {
-          this.$refs.camera.captured = true
-          this.$refs.camera.draw = false
+          // this.$refs.camera.captured = true
+          // this.$refs.camera.draw = false
         }
         if (this.step === 4) {
-          this.$refs.camera.draw = true
+          // this.$refs.camera.draw = true
         }
       },
       immediate: true
