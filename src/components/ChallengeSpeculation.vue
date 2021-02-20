@@ -111,7 +111,7 @@ export default {
   }
   .text-layer {
     position: absolute;
-    padding: $spacing * 4 $spacing $spacing * 2;
+    padding: $page-padding;
 
     // h2 {
     //   text-transform: capitalize;

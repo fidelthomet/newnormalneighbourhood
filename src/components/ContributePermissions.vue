@@ -14,11 +14,9 @@
         You’ll also need to grant access to your geolocation and camera before continuing
       </p>
       <div class="button-group">
-        <base-button secondary :state="statusLocation" @click="allowLocation">Allow location access</base-button>
-        <base-button secondary :state="statusCamera" @click="allowCamera">Allow camera access</base-button>
-        <transition name="fade">
-          <base-button v-if="permissionsGranted" class="enter" @click="$emit('next')">Enter the New Normal →</base-button>
-        </transition>
+        <base-button :icon="statusLocation" @click="allowLocation">Allow location access</base-button>
+        <base-button :icon="statusCamera" @click="allowCamera">Allow camera access</base-button>
+        <base-button icon="next" :disabled="!permissionsGranted" @click="$emit('next')">Enter the New Normal</base-button>
       </div>
     </div>
   </div>
@@ -59,7 +57,7 @@ export default {
   .permissions {
     display: flex;
     flex-direction: column;
-    padding: $spacing * 4 $spacing $spacing $spacing;
+    padding: $page-padding;
     max-width: $extra-narrow;
     p {
       margin-bottom: $spacing;
@@ -69,22 +67,33 @@ export default {
       }
     }
     .button-group {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
       margin-bottom: $spacing / 2;
-      mix-blend-mode: hard-light;
-      .base-button, .base-button-check {
-        // display: block;
+
+      .base-button {
         margin-bottom: $spacing / 2;
-        margin-right: $spacing / 2;
+
         &:last-child {
-          margin-right: 0;
+          margin-bottom: 0;
         }
-        &.enter {
-          font-weight: 700;
-          // text-transform: uppercase;
-        }
-        // background: $color-white;
-        // color: $color-accent;
       }
+      // // mix-blend-mode: hard-light;
+      // .base-button, .base-button-check {
+      //   // display: block;
+      //   margin-bottom: $spacing / 2;
+      //   margin-right: $spacing / 2;
+      //   &:last-child {
+      //     margin-right: 0;
+      //   }
+      //   &.enter {
+      //     font-weight: 700;
+      //     // text-transform: uppercase;
+      //   }
+      //   // background: $color-white;
+      //   // color: $color-accent;
+      // }
     }
   }
 }

@@ -28,6 +28,8 @@ $transition: 0.2s;
 
 $border-radius: $spacing;
 
+$page-padding: #{$spacing * 2} #{$spacing} max(env(safe-area-inset-bottom), #{$spacing}) #{$spacing};
+
 :export {
   accent: $color-accent;
   white: $color-white;

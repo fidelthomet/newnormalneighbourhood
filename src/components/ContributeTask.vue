@@ -60,7 +60,8 @@ export default {
     background: $color-accent;
     // mix-blend-mode: hard-light;
     @include supports-backdrop-blur {
-      background: transparentize($color-accent, 0.2);
+      background: transparentize($color-white, 0.7);
+      // backdrop-filter: saturate(0)
     };
     width: calc(1.25em + #{$spacing});
     min-height: calc(1.25em + #{$spacing});
@@ -68,13 +69,6 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-
-    &.light {
-      @include supports-backdrop-blur {
-        background: transparentize($color-white, 0.7);
-        backdrop-filter: saturate(0)
-      };
-    }
 
     svg {
       overflow: visible;
@@ -100,12 +94,12 @@ export default {
 
     hyphens: auto;
 
-    &.light {
-      @include supports-backdrop-blur {
-        background: transparentize($color-white, 0.7);
-        backdrop-filter: saturate(0)
-      };
-    }
+    // &.light {
+    //   @include supports-backdrop-blur {
+    //     background: transparentize($color-white, 0.7);
+    //     backdrop-filter: saturate(0)
+    //   };
+    // }
   }
 }
 </style>

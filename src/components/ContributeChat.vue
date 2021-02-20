@@ -89,7 +89,7 @@ export default {
     display: flex;
     width: 100%;
     flex-direction: column;
-    padding: $spacing * 4 $spacing $spacing * 4 $spacing;
+    padding: $page-padding;
     max-width: $extra-narrow;
 
     .options {

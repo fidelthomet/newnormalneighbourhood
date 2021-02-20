@@ -1,13 +1,13 @@
 <template>
   <div class="contribute subpage" :style="{height: `${height}px`}">
-    <base-image :img="photo || challenge?.img" :blur="step !== 2 && step !== 3" :tint="step ===  0 || step ===  4" showSlot>
+    <base-image :img="photo || challenge?.img" :blur="step !== 2 && step !== 4" :tint="step ===  0 || step ===  3" showSlot>
       <contribute-camera v-if="!disableCamera && (step === 1 || step === 2)" ref="camera" @next="step = 3" :challenge="challenge"/>
     </base-image>
     <base-progress :progress="step" :items="5"/>
     <div class="content" :class="{blend: step !== 2}">
       <!-- <router-view :challenge="challenge" @next="next"/> -->
       <transition-group name="fade">
-        <contribute-permissions v-if="step === 0" key="permissions" @next="step = 2" :challenge="challenge"/>
+        <contribute-permissions v-if="step === 0" key="permissions" @next="step = 1" :challenge="challenge"/>
         <contribute-chat v-if="step === 1" @next="step = 2" :challenge="challenge"/>
         <div v-if="step === 2" key="capture" class="capture">
           <contribute-task msg="Capture a vulnerability" icon="camera"/>
@@ -167,7 +167,7 @@ export default {
       flex-direction: column;
       justify-content: space-between;
       align-items: center;
-      padding: $spacing * 2 $spacing $spacing * 2 $spacing;
+      padding: $page-padding;
     }
     .capture {
       .release {

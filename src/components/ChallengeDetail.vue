@@ -5,8 +5,8 @@
       <div class="detail">
         <h2>{{challenge.title}}</h2>
         <div class="button-group">
-          <base-button :to="`/${challenge.id}/speculate`">speculate</base-button>
-          <base-button secondary :to="`/${challenge.id}/${speculations[0]?._id}`">explore</base-button>
+          <base-button tint :to="`/${challenge.id}/speculate`">speculate</base-button>
+          <base-button :to="`/${challenge.id}/${speculations[0]?._id}`">explore</base-button>
         </div>
         <div class="description">
           {{challenge.description}}
@@ -49,7 +49,7 @@ export default {
   .detail {
     position: absolute;
     width: 100%;
-    padding: $spacing $spacing $spacing * 2 $spacing;
+    padding: $page-padding;
 
     h2 {
       margin-bottom: $spacing;
@@ -72,8 +72,8 @@ export default {
         font-weight: 700;
         &::v-deep .label {
           text-transform: uppercase;
-          $offset: 0.1em;
-          padding: calc(#{$spacing / 2} + #{$offset}) $spacing calc(#{$spacing / 2} - #{$offset});
+          // $offset: 0.1em;
+          // padding: calc(#{$spacing / 2} + #{$offset}) $spacing calc(#{$spacing / 2} - #{$offset});
         }
         &:last-child {
           margin-right: 0;
