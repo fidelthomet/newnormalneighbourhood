@@ -30,7 +30,7 @@ import smoothPath from '@/assets/js/smoothPath'
 import BaseButton from './BaseButton.vue'
 // eslint-disable-next-line no-unused-vars
 import simplify from 'simplify-js'
-const { ShapeInfo, Intersection } = require('kld-intersections')
+import { ShapeInfo, Intersection } from 'kld-intersections'
 export default {
   components: { BaseButton },
   name: 'contribute-sketch',
