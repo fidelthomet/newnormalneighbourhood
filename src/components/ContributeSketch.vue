@@ -1,79 +1,188 @@
 <template>
   <div class="contribute-sketch">
-    <svg v-bind="dims">
-      <!-- <rect width="1100" height="1700"/> -->
-      <!-- <circle fill="red" cx="0" cy="0" r="50"/>
-      <circle fill="red" cx="1200" cy="0" r="50"/>
-      <circle fill="red" cx="1200" cy="1800" r="50"/>
-      <circle fill="red" cx="0" cy="1800" r="50"/>
-      <line x2="1200" transform="translate(0 100)" stroke="green" stroke-width="20"/>
-      <line x2="1200" transform="translate(0 200)" stroke="green" stroke-width="20"/>
-      <line x2="1200" transform="translate(0 300)" stroke="green" stroke-width="20"/>
-      <line x2="1200" transform="translate(0 400)" stroke="green" stroke-width="20"/>
-      <line x2="1200" transform="translate(0 500)" stroke="green" stroke-width="20"/>
-      <line x2="1200" transform="translate(0 600)" stroke="green" stroke-width="20"/>
-      <line x2="1200" transform="translate(0 700)" stroke="green" stroke-width="20"/> -->
-      <circle cx="600" cy="900" r="900" fill="red"/>
-      <circle cx="600" cy="900" r="800" fill="green"/>
-      <circle cx="600" cy="900" r="700" fill="red"/>
-      <circle cx="600" cy="900" r="600" fill="green"/>
-      <circle cx="600" cy="900" r="500" fill="red"/>
-      <circle cx="600" cy="900" r="400" fill="green"/>
-      <circle cx="600" cy="900" r="300" fill="red"/>
-      <circle cx="600" cy="900" r="200" fill="green"/>
-      <circle cx="600" cy="900" r="100" fill="red"/>
-      <circle cx="600" cy="900" r="10" fill="green"/>
+    <svg class="sketch" :viewBox="viewBox" ref="sketch"
+      @touchstart="startDrawing" @mousedown="startDrawing"
+      @touchmove="touchDraw" @mousemove="mouseDraw"
+      @touchend="endDrawing" @touchcancel="endDrawing"
+      @mouseup="endDrawing" @mouseleave="endDrawing" @mouseout="endDrawing">
+      <g class="paths">
+        <path v-for="(p) in paths" :key="p.index" :d="p.d"
+          @touchmove="erase(p.index, 'path')"/>
+      </g>
     </svg>
+    <div class="edit" :style="{height: `${height}px`}">
+      <div class="toolbar">instructions</div>
+      <div class="toolbar">
+        <base-button icon="undo" :disabled="actions.length === 0" @click="undo"/>
+        <div class="spacer"/>
+        <base-button icon="type" @click="setMode('type')" :tint="mode === 'type'" />
+        <base-button icon="erase" @click="setMode('erase')" :tint="mode === 'erase'" />
+        <base-button icon="draw" @click="setMode('draw')" :tint="mode === 'draw'" />
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import { mapActions, mapState } from 'vuex'
 import mapStateReactive from '@/assets/js/mapStateReactive'
+import smoothPath from '@/assets/js/smoothPath'
+import BaseButton from './BaseButton.vue'
+// eslint-disable-next-line no-unused-vars
+import simplify from 'simplify-js'
+const { ShapeInfo, Intersection } = require('kld-intersections')
 export default {
+  components: { BaseButton },
   name: 'contribute-sketch',
   props: {
-    challenge: {
-      type: Object,
-      default () { return {} }
-    }
   },
   data () {
     return {
-      captured: false,
-      videoWidth: null,
-      videoHeight: null,
-      img2: null,
-      drawing: null,
-      draw: false,
-      coords: null,
-      pathCount: 0
+      mode: null,
+      actions: [],
+      transformBy: {
+        x: 0,
+        y: 0,
+        scale: 1
+      },
+      eraser: null
     }
   },
   mounted () {
     // this.initCamera()
   },
   computed: {
-    ...mapState('device', ['width', 'height']),
+    ...mapState('device', ['height']),
     ...mapState('config', ['imgWidth', 'imgHeight']),
     ...mapStateReactive('data', ['photo']),
-    dims () {
-      const { imgWidth, imgHeight } = this
-      // // const ratio = height / width
-      // const imgRatio = imgHeight / imgWidth
-      // console.log(width > height / imgRatio)
-      return {
-        viewBox: `0 0 ${imgWidth} ${imgHeight}`
-        // style: {
-        //   width: width > height / imgRatio ? '100vw' : `${100 / imgRatio}vh`,
-        //   height: width > height / imgRatio ? `${imgRatio * 100}vw` : '100vh'
-        // }
-        // height: ratio < imgRatio ? height : width * imgRatio
-      }
+    viewBox () {
+      return `0 0 ${this.imgWidth} ${this.imgHeight}`
+    },
+    action () {
+      return this.actions[this.actions.length - 1]?.active ? this.actions[this.actions.length - 1] : null
+    },
+    erasedPaths () {
+      return this.actions
+        .filter(action => action.type === 'erased-path').map(action => action.index)
+    },
+    paths () {
+      return this.actions
+        .filter(action => action.type === 'path' && action.points.length > 0)
+        .map((action, index) => {
+          // const d = smoothPath(action.points)
+          return {
+            // d: action.d || smoothPath(simplify(action.points, 10)),
+            // d: action.d || `M${action.points.map(p => `${p[0]},${p[1]}`).join('L')}`,
+            d: action.d || smoothPath(action.points),
+            index
+          }
+        }).filter((action, i) => this.erasedPaths.indexOf(i) === -1)
     }
   },
   methods: {
-    ...mapActions('data', ['storePhoto'])
+    ...mapActions('data', ['storePhoto']),
+    setMode (mode) {
+      if (mode === this.mode) this.mode = null
+      else this.mode = mode
+    },
+    startDrawing (e) {
+      if (e.touches?.length > 1) return
+      e.preventDefault()
+      const rect = this.$refs.sketch.getBoundingClientRect()
+      this.transformBy.x = rect.x
+      this.transformBy.y = rect.y
+      this.transformBy.scale = this.imgHeight / rect.height
+
+      if (this.mode === 'draw') {
+        this.actions.push({
+          type: 'path',
+          active: true,
+          points: []
+        })
+      } else if (this.mode === 'erase') {
+        this.eraser = []
+      }
+    },
+    endDrawing (e) {
+      if (e.touches?.length > 1) return
+      e.preventDefault()
+      if (this.mode === 'draw') {
+        if (this.action == null) return
+        if (this.action.points.length > 1) {
+          console.log(this.action.points.length, simplify(this.action.points, 1).length)
+          // console.log(this.action.points, simplify(this.action.points, 1))
+          this.action.d = smoothPath(simplify(this.action.points, 1))
+          this.action.active = false
+        } else {
+          this.undo()
+        }
+      } else if (this.mode === 'erase') {
+        this.eraser = null
+      }
+    },
+    touchDraw (e) {
+      if (e.touches.length > 1) return
+      e.preventDefault()
+      if (this.mode === 'draw') {
+        if (this.action == null) return
+        this.draw(e.touches[0])
+      } else if (this.mode === 'erase') {
+        if (this.eraser == null) return
+        this.erase(e.touches[0])
+        // console.log(document.elementFromPoint(e.touches[0].clientX, e.touches[0].pageY))
+      }
+    },
+    mouseDraw (e) {
+      e.preventDefault()
+      if (this.mode === 'draw') {
+        if (this.action == null) return
+        this.draw(e)
+      } else if (this.mode === 'erase') {
+        if (this.eraser == null) return
+        this.erase(e)
+      }
+    },
+    draw (e) {
+      const { x, y } = this.transform(e)
+      this.action.points.push([x, y])
+    },
+    erase (e) {
+      const { x, y } = this.transform(e)
+      this.eraser.push([x, y])
+      if (this.eraser.length > 5) {
+        this.eraser.shift()
+      }
+      if (this.eraser.length > 2) {
+        const eraser = ShapeInfo.polyline(...this.eraser)
+        this.paths.forEach(p => {
+          const path = ShapeInfo.path(p.d)
+          const intersections = Intersection.intersect(eraser, path)
+          if (intersections.points.length > 0) {
+            this.actions.push({
+              type: 'erased-path',
+              index: p.index
+            })
+          }
+        })
+      }
+    },
+    // erase (index, el) {
+    //   console.log(index)
+    //   if (this.mode !== 'erase' || this.erasedPaths.indexOf(index) !== -1) return
+    //   this.actions.push({
+    //     type: `erased-${el}`,
+    //     index
+    //   })
+    // },
+    transform (e) {
+      return {
+        x: (e.clientX - this.transformBy.x) * this.transformBy.scale,
+        y: (e.clientY - this.transformBy.y) * this.transformBy.scale
+      }
+    },
+    undo () {
+      this.actions.pop()
+    }
   }
 }
 </script>
@@ -88,18 +197,60 @@ export default {
   justify-content: center;
   align-items: center;
   // background: blueviolet;
-  opacity: 0.5;
+  // opacity: 0.5;
   overflow: hidden;
   position: fixed;
 
-  svg {
+  .sketch {
     position: absolute;
     display: block;
     width: max(100vw, 66.6666vh);
     height: max(100vh, 150vw);
-    // transform: scale(0.95);
-    // background: aqua;
 
+    path {
+      fill: none;
+      stroke: $color-accent;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 20;
+      pointer-events: none;
+    }
+    polyline {
+      fill: none;
+      stroke: aqua;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 20;
+    }
+
+  }
+
+  .edit {
+    padding: $page-padding;
+    width: 100%;
+    pointer-events: none;
+    display: flex;
+    align-self: flex-start;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: column;
+
+    .toolbar {
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
+
+      .spacer {
+        flex: 1;
+      }
+
+      .base-button {
+        pointer-events: all;
+        &+.base-button {
+          margin-left: $spacing;
+        }
+      }
+    }
   }
 }
 </style>

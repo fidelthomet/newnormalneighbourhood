@@ -10,8 +10,10 @@
   "dependencies": {
     "@svg-drawing/core": "^4.0.0",
     "core-js": "^3.6.5",
+    "kld-intersections": "^0.7.0",
     "normalize-scss": "^7.0.1",
     "register-service-worker": "^1.7.1",
+    "simplify-js": "github:fidelthomet/simplify-js",
     "vue": "^3.0.0",
     "vue-resize": "^2.0.0-alpha.1",
     "vue-resize-text": "github:fidelthomet/vue-resize-text#vue-3",
