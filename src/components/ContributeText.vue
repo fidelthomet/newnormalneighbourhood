@@ -1,22 +1,22 @@
 <template>
   <div class="contribute-text">
     <div class="nav">
-      <contribute-task msg="Describe" icon="type" light/>
-      <transition name="fade-alt">
-        <contribute-task icon="next" icon-light v-if="valid" @click="$emit('next')"/>
-      </transition>
+      <base-button icon="type"><strong>Describe</strong></base-button>
+      <!-- <transition name="fade-alt">
+        <base-button icon="next" icon-light v-if="valid" @click="$emit('next')"/>
+      </transition> -->
     </div>
     <div class="form">
       <div class="label">
-        Title
+        Artefact
         <span class="counter" :class="{warn: title.length > 25}">{{title.length}}/25</span>
       </div>
       <h2 ref="title" contenteditable placeholder="What did you capture?" @input="input('title', $event)"/>
       <div class="label">
-        <span>Vulnerability</span>
+        <span>Consequences</span>
         <span class="counter" :class="{warn: title.length > 150}">{{description.length}}/150</span>
       </div>
-      <p ref="description" contenteditable placeholder="What is at risk? Who might be affected?" @input="input('description', $event)"/>
+      <p ref="description" contenteditable placeholder="Whatʼs at risk? Whatʼs the impact on the neighbourhood?" @input="input('description', $event)"/>
       <!-- <div class="label">
         <span>Opportunity</span>
         <span class="counter" :class="{warn: title.length > 150}">{{opportunity.length}}/150</span>
@@ -24,19 +24,17 @@
       <p contenteditable placeholder="What can be done to adapt and mitigate risks?" @input="input('opportunity', $event)"/> -->
     </div>
     <div class="bottom-nav">
-      <transition name="fade-alt">
-        <contribute-task icon="next" msg="next" icon-light v-if="valid" @click="$emit('next')"/>
-      </transition>
+      <base-button icon="next" :disabled="!valid" @click="$emit('next')">next</base-button>
     </div>
   </div>
 </template>
 
 <script>
 import mapStateReactive from '@/assets/js/mapStateReactive'
-import ContributeTask from './ContributeTask.vue'
+import BaseButton from './BaseButton.vue'
 // import BaseImage from './BaseImage.vue'
 export default {
-  components: { ContributeTask },
+  components: { BaseButton },
   name: 'contribute-text',
   props: {
     challenge: {
@@ -91,7 +89,6 @@ export default {
     left: 0;
     // width: 100%;
     // padding: 0 $spacing 0 $spacing;
-
   }
 
   .bottom-nav {

@@ -1,5 +1,7 @@
 <template>
-  <component :is="is" :role="role" :to="to" class="base-button" :class="{disabled, tint, reverse, 'no-label': $slots.default == null}">
+  <component :is="is" :role="role" :to="to" class="base-button" ref="button"
+    :class="{disabled, tint, 'tint-icon': tintIcon, reverse, collapsed, 'no-label': $slots.default == null}"
+    :style="(collapse && !collapsed || collapsed && !collapse) ? buttonDims : null">
     <span v-if="icon != null" class="icon">
       <svg viewBox="-10 -10 20 20">
         <g>
@@ -44,7 +46,8 @@
         </g>
       </svg>
     </span>
-    <span class="label" v-if="$slots.default">
+    <span class="label" v-if="$slots.default" ref="label"
+      :style="(collapse || collapsed && !collapse) ? labelDims : null">
       <slot/>
     </span>
   </component>
@@ -59,6 +62,10 @@ export default {
       type: Boolean,
       default: false
     },
+    tintIcon: {
+      type: Boolean,
+      default: false
+    },
     disabled: {
       type: Boolean,
       default: false
@@ -70,6 +77,17 @@ export default {
     icon: {
       type: String,
       default: null
+    },
+    collapse: {
+      type: Boolean,
+      default: false
+    }
+  },
+  data () {
+    return {
+      collapsed: false,
+      labelDims: { minWidth: '0px', height: '0px' },
+      buttonDims: { width: '0px', height: '0px' }
     }
   },
   computed: {
@@ -78,6 +96,28 @@ export default {
     },
     role () {
       return this.to == null ? 'button' : null
+    }
+  },
+  watch: {
+    collapse: {
+      handler (collapse) {
+        if (collapse) {
+          const button = this.$refs.button.getBoundingClientRect()
+          const label = this.$refs.label.getBoundingClientRect()
+          this.buttonDims = { width: `${button.width}px`, height: `${button.height}px` }
+          this.labelDims = { minWidth: `${label.width}px`, height: `${button.height}px` }
+          setTimeout(() => {
+            this.collapsed = true
+          }, 0)
+        } else {
+          setTimeout(() => {
+            this.collapsed = false
+            this.labelDims = null
+            this.buttonDims = null
+          }, 400)
+        }
+      }
+      // immediate: true
     }
   }
 }
@@ -88,7 +128,7 @@ export default {
 .base-button {
   display: flex;
   color: $color-white;
-  transition: color $transition;
+  transition: color $transition, width $transition, height $transition;
   border: none;
   font-size: (1em / 1.125);
   z-index: 0;
@@ -156,29 +196,23 @@ export default {
     .icon {
       background: transparentize($color-deep-gray, 0.7);
     }
-
-    &.tint {
-      .icon {
-        background: transparentize($color-accent, 0.2);
-        mix-blend-mode: hard-light;
-        filter: saturate(2)
-      }
-    }
   }
   &.reverse {
     flex-direction: row-reverse;
-    &.tint {
-      .label {
-         @include supports-backdrop-blur {
-          background: transparentize($color-deep-gray, 0.7);
-        };
-      }
-      .icon {
-        background: transparentize($color-accent, 0.2);
-        mix-blend-mode: hard-light;
-        filter: saturate(2)
-      }
+  }
+
+  &.tint-icon {
+    .icon {
+      background: transparentize($color-accent, 0.2);
+      mix-blend-mode: hard-light;
+      filter: saturate(2)
     }
+  }
+
+  &.collapsed {
+    width: calc(1.25em + #{$spacing});
+    height: calc(1.25em + #{$spacing});
+    overflow: hidden;
   }
 
   @keyframes rotate {

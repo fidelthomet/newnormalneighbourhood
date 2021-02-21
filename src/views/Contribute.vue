@@ -10,7 +10,10 @@
         <contribute-permissions v-if="step === 0" key="permissions" @next="step = 1" :challenge="challenge"/>
         <contribute-chat v-if="step === 1" @next="step = 2" :challenge="challenge"/>
         <div v-if="step === 2" key="capture" class="capture">
-          <contribute-task msg="Capture a vulnerability" icon="camera"/>
+          <base-button icon="camera" tint-icon>
+            <strong>Capture</strong><br>
+            <span>Identify a vulnerable artefact and photograph it</span>
+          </base-button>
           <div class="release">
             <svg width="60" height="60" viewBox="-30 -30 60 60">
               <circle class="outline" r="28.5"/>
@@ -36,14 +39,13 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex'
-// import BaseButton from '../components/BaseButton.vue'
+import BaseButton from '../components/BaseButton.vue'
 import BaseImage from '../components/BaseImage.vue'
 import BaseProgress from '../components/BaseProgress.vue'
 import ContributeCamera from '../components/ContributeCamera.vue'
 import ContributeChat from '../components/ContributeChat.vue'
 import ContributePermissions from '../components/ContributePermissions.vue'
 import ContributeSketch from '../components/ContributeSketch.vue'
-import ContributeTask from '../components/ContributeTask.vue'
 import ContributeText from '../components/ContributeText.vue'
 export default {
   name: 'contribute',
@@ -53,10 +55,9 @@ export default {
     BaseProgress,
     ContributeChat,
     ContributeCamera,
-    ContributeTask,
     ContributeText,
-    ContributeSketch
-    // BaseButton
+    ContributeSketch,
+    BaseButton
   },
   data () {
     return {
@@ -154,13 +155,13 @@ export default {
     width: 100%;
     height: 100%;
     pointer-events: none;
-    &.blend {
-      // mix-blend-mode: hard-light;
-    }
+    // &.blend {
+    //   mix-blend-mode: hard-light;
+    // }
     > * {
       pointer-events: all;
     }
-    .capture, .sketch {
+    .capture {
       width: 100%;
       height: 100%;
       display: flex;
@@ -168,8 +169,11 @@ export default {
       justify-content: space-between;
       align-items: center;
       padding: $page-padding;
-    }
-    .capture {
+
+      .base-button {
+        align-self: flex-start;
+      }
+
       .release {
         // background: green;
         box-shadow: 0px 0px 50px $color-deep-gray;
@@ -186,18 +190,6 @@ export default {
           .button {
             fill: $color-white;
           }
-        }
-      }
-    }
-    .sketch {
-      pointer-events: none;
-
-      .buttons {
-        display: flex;
-        width: 100%;
-        justify-content: space-between;
-        .base-button {
-          pointer-events: all;
         }
       }
     }

@@ -18,16 +18,20 @@
       </g>
     </svg>
     <div class="edit" :style="{height: `${height}px`}">
-      <div class="toolbar">
-        <base-button icon="undo" @click="undo"/>
-        <base-button :icon="publishing ? 'requested' : 'publish'" reverse :tint="actions.length > 0" :disabled="actions.length === 0" @click="publish">publish</base-button>
+      <div class="toolbar navbar">
+        <base-button icon="sketch" tint-icon class="task" :collapse="collapseTask" @click="collapseTask = !collapseTask">
+          <strong>Ideate</strong><br>
+          <span>Imagine an alternative! What can we do to increase resilience?</span>
+        </base-button>
+        <div class="spacer"/>
+        <base-button :icon="publishing ? 'requested' : 'publish'" reverse :tint-icon="actions.length > 0" :disabled="actions.length === 0" @click="publish">publish</base-button>
       </div>
       <div class="toolbar">
         <base-button icon="undo" :disabled="actions.length === 0" @click="undo"/>
         <div class="spacer"/>
         <base-button icon="type" @click="setMode('type')" />
-        <base-button icon="erase" @click="setMode('erase')" :tint="mode === 'erase'" />
-        <base-button icon="draw" @click="setMode('draw')" :tint="mode === 'draw'" />
+        <base-button icon="erase" @click="setMode('erase')" :tint-icon="mode === 'erase'" />
+        <base-button icon="draw" @click="setMode('draw')" :tint-icon="mode === 'draw'" />
       </div>
     </div>
     <div class="text-overlay" :class="{ show: mode === 'type'}">
@@ -63,6 +67,7 @@ export default {
         y: 0,
         scale: 1
       },
+      collapseTask: false,
       eraser: null,
       publishing: false
     }
@@ -305,6 +310,12 @@ export default {
         }
       })
     }
+  },
+  watch: {
+    'actions.length' (length) {
+      if (length === 0) this.collapseTask = false
+      else this.collapseTask = true
+    }
   }
 }
 </script>
@@ -420,8 +431,20 @@ export default {
 
       .base-button {
         pointer-events: all;
+        &.disabled {
+          pointer-events: none;
+        }
         &+.base-button {
           margin-left: $spacing;
+        }
+      }
+
+      &.navbar {
+        position: relative;
+
+        .task {
+          position: absolute;
+          z-index: 1;
         }
       }
     }
