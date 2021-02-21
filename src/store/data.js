@@ -26,11 +26,15 @@ export default {
         ]
       })
     },
+    storeSketch ({ commit }, sketch) {
+      commit('set', { sketch })
+    },
     wipe ({ commit }) {
       commit('set', {
         title: '',
         description: '',
         photo: null,
+        sketch: null,
         coords: null
       })
     }

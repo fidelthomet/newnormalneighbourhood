@@ -1,5 +1,5 @@
 <template>
-  <component :is="is" :role="role" :to="to" class="base-button" :class="{disabled, tint, 'no-label': $slots.default == null}">
+  <component :is="is" :role="role" :to="to" class="base-button" :class="{disabled, tint, reverse, 'no-label': $slots.default == null}">
     <span v-if="icon != null" class="icon">
       <svg viewBox="-10 -10 20 20">
         <g>
@@ -10,6 +10,10 @@
             <!-- <circle  cx="7" cy="1" r="7"/> -->
             <path v-if="icon === 'denied'" key="denied" class="denied" d="M-5,-5L5,5M-5,5L5,-5"/>
             <g v-if="icon === 'next'">
+              <polyline points="1 6 7 0 1 -6"/>
+              <line x1="-6" y1="0" x2="6" y2="0"/>
+            </g>
+            <g v-if="icon === 'publish'" transform="rotate(-90)">
               <polyline points="1 6 7 0 1 -6"/>
               <line x1="-6" y1="0" x2="6" y2="0"/>
             </g>
@@ -29,6 +33,12 @@
             <g v-if="icon === 'draw'" transform="translate(-7, -7)">
                 <polygon id="Path-46" fill="#FFFFFF" points="10 7 10 0 4 2 4 7"></polygon>
                 <polyline id="Path-47" points="-1.28563826e-12 14 1.5 8 3 7 11 7 12.5 8 14 14"></polyline>
+            </g>
+            <g v-if="icon === 'erase'" transform="translate(-5, -7)">
+                <polyline id="Path-47" points="1.98951966e-12 14 1.0658141e-13 1.5 1.5 -3.97903932e-12 8.5 -4.05009359e-12 10 1.5 10 14"></polyline>
+                <line x1="6.5" y1="9.5" x2="3.5" y2="12.5" id="Path"></line>
+                <polygon id="Path-3" fill="#FFFFFF" points="0.5 1 1.5 0 8.5 0 9.5 1 9.5 6 0.5 6"></polygon>
+                <line x1="3.5" y1="9.5" x2="6.5" y2="12.5" id="Path-2"></line>
             </g>
           </transition-group>
         </g>
@@ -50,6 +60,10 @@ export default {
       default: false
     },
     disabled: {
+      type: Boolean,
+      default: false
+    },
+    reverse: {
       type: Boolean,
       default: false
     },
@@ -80,6 +94,7 @@ export default {
   z-index: 0;
   @include backdrop-blur;
   .label {
+    transition: background $transition;
     @include supports-backdrop-blur {
       background: transparentize($color-deep-gray, 0.7);
     };
@@ -93,6 +108,7 @@ export default {
   .icon {
     padding: $spacing / 2;
     background: $color-accent;
+    transition: background $transition;
     @include supports-backdrop-blur {
       background: transparentize($color-white, 0.7);
     }
@@ -148,11 +164,21 @@ export default {
         filter: saturate(2)
       }
     }
-    // .label {
-    //   background: transparentize($color-accent, 0.2);
-    //   mix-blend-mode: hard-light;
-    //   filter: saturate(2)
-    // }
+  }
+  &.reverse {
+    flex-direction: row-reverse;
+    &.tint {
+      .label {
+         @include supports-backdrop-blur {
+          background: transparentize($color-deep-gray, 0.7);
+        };
+      }
+      .icon {
+        background: transparentize($color-accent, 0.2);
+        mix-blend-mode: hard-light;
+        filter: saturate(2)
+      }
+    }
   }
 
   @keyframes rotate {

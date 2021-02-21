@@ -54,10 +54,10 @@ export default {
           }))[0])
       })
     },
-    async commitSpeculation ({ commit }, d) {
+    async commitSpeculation ({ commit, rootState }, scenario) {
       const data = {
-        // type: 'testing',
-        ...d
+        ...rootState.data,
+        scenario
       }
 
       const response = await fetch(`${api}/speculation`, {

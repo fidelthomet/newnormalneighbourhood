@@ -8,7 +8,6 @@
 
 <script>
 import { mapActions, mapState } from 'vuex'
-import mapStateReactive from '@/assets/js/mapStateReactive'
 export default {
   name: 'contribute-camera',
   props: {
@@ -39,7 +38,6 @@ export default {
   computed: {
     ...mapState('device', ['camera', 'width', 'height']),
     ...mapState('config', ['imgWidth', 'imgHeight']),
-    ...mapStateReactive('data', ['photo']),
     videoCover () {
       return {
         width: `max(100%, ${this.wrapperHeight * this.videoWidth / this.videoHeight}px)`,
