@@ -23,12 +23,10 @@
 <script>
 import { mapActions, mapState } from 'vuex'
 import ChallengeDetail from '../components/ChallengeDetail.vue'
-// import ChallengeIntro from '../components/ChallengeIntro.vue'
 import BaseGallery from '../components/BaseGallery.vue'
 export default {
   name: 'challenge',
   components: {
-    // ChallengeIntro,
     ChallengeDetail,
     BaseGallery
   },

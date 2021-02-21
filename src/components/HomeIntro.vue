@@ -14,12 +14,8 @@
 </template>
 
 <script>
-import ResizeText from 'vue-resize-text/src/VueResizeText'
 export default {
-  name: 'home-intro',
-  directives: {
-    ResizeText
-  }
+  name: 'home-intro'
 }
 </script>
 
