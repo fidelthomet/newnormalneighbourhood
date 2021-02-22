@@ -5,11 +5,21 @@
           <base-image :blur="step === 1" :tint="step === 1" showSlot>
             <div class="img-wrapper">
               <!-- <div class="img" :style="{'background-image': `url(${photo})`}"/> -->
-              <img class="img" :src="speculation.img">
+              <img class="img" :src="speculation?.img">
               <transition name="fade-alt">
                 <div v-if="step === 2" class="drawing" ref="drawing">
-                  <svg :viewBox="`0 0 ${details.sketchDimensions[0]} ${details.sketchDimensions[1]}`">
-                    <path :style="{'stroke-width': details.sketchDimensions[0] * 0.02}" v-for="(path, i) in details.sketch" :key="i" :d="path"/>
+                  <svg :viewBox="`0 0 ${imgWidth} ${imgHeight}`">
+                    <!-- <path :style="{'stroke-width': details.sketchDimensions[0] * 0.02}" v-for="(path, i) in details.sketch" :key="i" :d="path"/> -->
+                    <g class="paths">
+                      <path v-for="(p,i) in details.sketch.paths" :key="i" :d="p"/>
+                    </g>
+                    <g class="texts">
+                      <text v-for="(t, i) in details.sketch.texts" :key="i" :transform="t.transform">
+                        <tspan v-for="(l, i) in t.rows" :key="i" :dy="i === 0 ? 36 : 36*1.25" x="0">
+                          {{l}}
+                        </tspan>
+                      </text>
+                    </g>
                   </svg>
                 </div>
               </transition>
@@ -45,15 +55,18 @@ export default {
   computed: {
     ...mapState('api', {
       details: 'speculation'
-    })
+    }),
+    ...mapState('config', ['imgHeight', 'imgWidth'])
   },
   methods: {
     ...mapActions('api', ['fetchSpeculation'])
   },
   watch: {
     'speculation._id': {
-      handler (id) {
-        if (id != null) this.fetchSpeculation(id)
+      async handler (id) {
+        if (id != null) {
+          await this.fetchSpeculation(id)
+        }
       },
       immediate: true
     }
@@ -74,7 +87,7 @@ export default {
 
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  // justify-content: flex-end;
   align-items: center;
 
   .img-wrapper {
@@ -99,9 +112,23 @@ export default {
         width: 100%;
         height: 100%;
         path {
-          stroke: $color-accent;
-          stroke-width: 1.5vw;
           fill: none;
+          stroke: $color-accent;
+          stroke-linecap: round;
+          stroke-linejoin: round;
+          stroke-width: 20;
+          pointer-events: none;
+        }
+        .texts {
+          text {
+            fill: $color-accent;
+            font-size: 36px;
+            font-weight: 700;
+            text-anchor: middle;
+            pointer-events: none;
+            // dominant-baseline: hanging;
+            touch-action: none;
+          }
         }
       }
     }
@@ -110,8 +137,11 @@ export default {
     }
   }
   .text-layer {
+    // align-self: flex-start;
     position: absolute;
     padding: $page-padding;
+    padding-top: $spacing * 8;
+    width: 100%;
 
     // h2 {
     //   text-transform: capitalize;

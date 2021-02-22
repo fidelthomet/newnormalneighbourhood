@@ -80,5 +80,24 @@ export default {
   .fade-alt-leave-to {
     opacity: 0;
   }
+
+  .slide-left-enter-active,
+  .slide-left-leave-active,
+  .slide-right-enter-active,
+  .slide-right-leave-active {
+    position: absolute;
+    width: 100%;
+    transition: transform 1s linear;
+    transform: translate(0)
+  }
+  .slide-left-enter-from, .slide-right-leave-to {
+    z-index: 1;
+  }
+  .slide-left-enter-from, .slide-right-leave-to {
+    transform: translateX(100vw)
+  }
+  // .slide-left-leave-to, .slide-right-enter-from {
+  //   // transform: translateX(-100vw)
+  // }
 }
 </style>

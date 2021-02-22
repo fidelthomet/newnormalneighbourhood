@@ -8,14 +8,14 @@
         @next="next" @prev="prev">
         <template v-slot="{ step }">
           <router-view v-if="challenge" v-slot="{ Component }">
-            <transition name="fade">
-              <component :is="Component" :challenge="challenge" :speculation="speculation" :step="step"/>
+            <transition :name="slideLeft ? 'slide-left' : 'slide-right'">
+            <component :is="Component" :key="speculation?._id || challenge.id" :challenge="challenge" :speculation="speculation" :step="step"/>
             </transition>
           </router-view>
         </template>
     </base-gallery>
-    <div class="close" @click="$router.push({name: 'Home'})">
-      close
+    <div class="buttons">
+      <base-button @click="$router.push({name: 'Home'})">close</base-button>
     </div>
   </div>
 </template>
@@ -24,11 +24,18 @@
 import { mapActions, mapState } from 'vuex'
 import ChallengeDetail from '../components/ChallengeDetail.vue'
 import BaseGallery from '../components/BaseGallery.vue'
+import BaseButton from '../components/BaseButton.vue'
 export default {
   name: 'challenge',
   components: {
     ChallengeDetail,
-    BaseGallery
+    BaseGallery,
+    BaseButton
+  },
+  data () {
+    return {
+      slideLeft: true
+    }
   },
   mounted () {
     this.fetchSpeculations()
@@ -40,13 +47,13 @@ export default {
       return this.challenges?.find(({ id }) => id === this.$route.params.challenge)
     },
     speculation () {
-      console.log('a')
       return this.speculations?.find(({ _id }) => _id === this.$route.params.speculation)
     }
   },
   methods: {
     ...mapActions('api', ['fetchSpeculations']),
     next () {
+      this.slideLeft = true
       if (this.speculation == null) {
         const speculation = this.$store.getters['api/speculations'](this.challenge.id)[0]
         this.$router.push({ name: 'speculation', params: { challenge: this.challenge.id, speculation: speculation._id } })
@@ -56,12 +63,24 @@ export default {
       const speculation = this.speculations.find((s, i) =>
         s.scenario === this.challenge.id && i > index
       )
-      console.log(speculation)
       if (speculation == null) this.$router.push({ name: 'scenario', params: { challenge: this.challenge.id } })
       else this.$router.push({ name: 'speculation', params: { challenge: this.challenge.id, speculation: speculation._id } })
     },
     prev () {
-      console.log('prev')
+      this.slideLeft = false
+      if (this.speculation == null) {
+        const speculation = this.$store.getters['api/speculations'](this.challenge.id).reverse()[0]
+        this.$router.push({ name: 'speculation', params: { challenge: this.challenge.id, speculation: speculation._id } })
+        return
+      }
+      const index = this.speculations.slice().reverse().findIndex(s => s._id === this.speculation._id)
+      const speculation = this.speculations.slice().reverse().find((s, i) =>
+        s.scenario === this.challenge.id && i > index
+      )
+      if (speculation == null) {
+        console.log('expected')
+        this.$router.push({ name: 'scenario', params: { challenge: this.challenge.id } })
+      } else this.$router.push({ name: 'speculation', params: { challenge: this.challenge.id, speculation: speculation._id } })
     }
   }
 }
@@ -69,10 +88,13 @@ export default {
 <style lang="scss" scoped>
 @import "@/assets/style/global";
 .challenge {
-  .close {
+  overflow: hidden;
+  .buttons {
     position: absolute;
-    top: $spacing;
+    top: $spacing * 2;
     right: $spacing;
+    pointer-events: all;
+    z-index: 5;
   }
 }
 </style>

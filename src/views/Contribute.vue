@@ -3,7 +3,7 @@
     <base-image :img="photo || challenge?.img" :blur="step !== 2 && step !== 4" :tint="step ===  0 || step ===  3" showSlot>
       <contribute-camera v-if="!disableCamera && (step === 1 || step === 2)" ref="camera" @next="step = 3" :challenge="challenge"/>
     </base-image>
-    <base-progress :progress="step" :items="5"/>
+    <base-progress :progress="step" :items="4"/>
     <div class="content" :class="{blend: step !== 2}">
       <!-- <router-view :challenge="challenge" @next="next"/> -->
       <transition-group name="fade">
@@ -23,15 +23,6 @@
         </div>
         <contribute-text v-if="step === 3" key="text" @next="step = 4"/>
         <contribute-sketch v-if="step === 4" key="sketch"/>
-        <!-- <div v-if="step === 4" key="sketch" class="sketch">
-          <contribute-task msg="Sketch in Opportunity" icon="camera"/>
-          <transition name="fade-alt">
-            <div class="buttons"  v-if="$refs.camera.draw && $refs.camera.pathCount > 0">
-                <base-button @click="$refs.camera.undo">Undo</base-button>
-                <base-button @click="$refs.camera.submit">submit</base-button>
-            </div>
-          </transition>
-        </div> -->
       </transition-group>
     </div>
   </div>
@@ -103,11 +94,9 @@ export default {
     }
     // resize () {
     //   // this.height = innerHeight
-    //   // console.log('a', innerHeight)
     //   clearTimeout(this.throttle)
     //   this.throttle = setTimeout(() => {
     //     this.height = innerHeight
-    //     console.log('b', innerHeight)
     //   }, 100)
     // }
   },
@@ -115,9 +104,8 @@ export default {
     step: {
       handler () {
         // window.scrollTo(0, document.body.scrollHeight)
-        console.log(this.step, this.maxStep)
         if (this.step > this.maxStep) {
-          // this.step = this.maxStep
+          this.step = this.maxStep
           return
         }
         if (this.step === 2 && this.maxStep > 2) {

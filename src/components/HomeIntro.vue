@@ -32,9 +32,6 @@ export default {
     width: 100%;
     margin-bottom: $spacing;
   }
-  p {
-
-  }
   .arrow {
     margin-top: auto;
   }

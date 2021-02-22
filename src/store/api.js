@@ -7,6 +7,9 @@ export default {
     challenges: null,
     speculations: null,
     speculation: null,
+    speculationDetails: {
+
+    },
     files
   },
   getters: {
@@ -20,6 +23,9 @@ export default {
       Object.keys(obj).forEach(key => {
         state[key] = obj[key]
       })
+    },
+    updateDetails (state, { id, speculation }) {
+      state.speculationDetails[id] = speculation
     }
   },
   actions: {
@@ -43,16 +49,20 @@ export default {
           })))
       })
     },
-    async fetchSpeculation ({ commit }, id) {
-      commit('set', { speculation: null })
-      commit('set', {
-        speculation: await fetch(`${api}/speculation/${id}`)
+    async fetchSpeculation ({ commit, state }, id) {
+      // commit('set', { speculation: null })
+      if (state.speculationDetails[id] != null) {
+        commit('set', { speculation: state.speculationDetails[id] })
+      } else {
+        const speculation = await fetch(`${api}/speculation/${id}`)
           .then(r => r.json())
           .then(d => d.map(speculation => ({
             ...speculation,
             img: `${files}/s/${speculation._id}.jpg`
           }))[0])
-      })
+        commit('set', { speculation })
+        commit('updateDetails', { id, speculation })
+      }
     },
     async commitSpeculation ({ commit, rootState }, scenario) {
       const data = {

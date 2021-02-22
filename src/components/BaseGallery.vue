@@ -29,7 +29,8 @@ export default {
       progress: 0,
       stopped: false,
       duration: 6000,
-      time: null
+      time: null,
+      animation: null
     }
   },
   computed: {
@@ -38,7 +39,10 @@ export default {
     }
   },
   mounted () {
-    requestAnimationFrame(this.animate)
+    this.animation = requestAnimationFrame(this.animate)
+  },
+  unmounted () {
+    cancelAnimationFrame(this.animation)
   },
   methods: {
     animate (t) {
@@ -46,17 +50,19 @@ export default {
       if (this.time != null) {
         const delta = (t - this.time) / this.duration
         if (this.progress + delta >= this.items) {
-          console.log('emit::next')
           this.$emit('next')
         }
         this.progress = (this.progress + delta) % this.items
       }
       this.time = t
-      requestAnimationFrame(this.animate)
+      this.animation = requestAnimationFrame(this.animate)
     },
     back () {
       this.progress = (this.step + this.items - 1) % this.items
-      if (this.progress === this.items - 1) this.$emit('prev')
+      if (this.progress === this.items - 1) {
+        this.$emit('prev')
+        this.progress = 0
+      }
     },
     next () {
       this.progress = (this.step + 1) % this.items
