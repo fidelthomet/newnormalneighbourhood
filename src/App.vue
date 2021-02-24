@@ -70,14 +70,22 @@ export default {
   }
 
   .fade-alt-enter-active,
-  .fade-alt-leave-active {
+  .fade-alt-leave-active,
+  .fade-alt-2-enter-active,
+  .fade-alt-2-leave-active {
     transition: opacity 0.4s ease;
+  }
+
+  .fade-alt-2-leave-active {
+    position: absolute;
   }
 
   .fade-enter-from,
   .fade-leave-to,
   .fade-alt-enter-from,
-  .fade-alt-leave-to {
+  .fade-alt-leave-to,
+  .fade-alt-2-enter-from,
+  .fade-alt-2-leave-to {
     opacity: 0;
   }
 
@@ -87,17 +95,21 @@ export default {
   .slide-right-leave-active {
     position: absolute;
     width: 100%;
-    transition: transform 1s linear;
+    transition: transform 0.4s, opacity 0.4s;
     transform: translate(0)
   }
   .slide-left-enter-from, .slide-right-leave-to {
     z-index: 1;
   }
   .slide-left-enter-from, .slide-right-leave-to {
-    transform: translateX(100vw)
+    transform: translateX(110vw) scale(1.2);
   }
-  // .slide-left-leave-to, .slide-right-enter-from {
-  //   // transform: translateX(-100vw)
-  // }
+  .slide-right-enter-from {
+    z-index: -1;
+  }
+  .slide-left-leave-to, .slide-right-enter-from {
+    transform: scale(0.9);
+    opacity: 0.6;
+  }
 }
 </style>

@@ -15,7 +15,7 @@
         </template>
     </base-gallery>
     <div class="buttons">
-      <base-button @click="$router.push({name: 'Home'})">close</base-button>
+      <base-button @click="$router.push({name: 'Home'})" icon="close"/>
     </div>
   </div>
 </template>

@@ -1,9 +1,9 @@
 <template>
   <div class="contribute subpage" :style="{height: `${height}px`}">
-    <base-image :img="photo || challenge?.img" :blur="step !== 2 && step !== 4" :tint="step ===  0 || step ===  3" showSlot>
+    <base-image :img="photo || challenge?.img" :blur="step !== 2 && step !== 4" :tint="step ===  0 || step ===  3 || step === 5" showSlot>
       <contribute-camera v-if="!disableCamera && (step === 1 || step === 2)" ref="camera" @next="step = 3" :challenge="challenge"/>
     </base-image>
-    <base-progress :progress="step" :items="4"/>
+    <base-progress :progress="step" :items="5"/>
     <div class="content" :class="{blend: step !== 2}">
       <!-- <router-view :challenge="challenge" @next="next"/> -->
       <transition-group name="fade">
@@ -22,14 +22,31 @@
           </div>
         </div>
         <contribute-text v-if="step === 3" key="text" @next="step = 4"/>
-        <contribute-sketch v-if="step === 4" key="sketch"/>
+        <contribute-sketch v-if="step === 4" key="sketch" @next="thanks"/>
+        <div v-if="step === 5" key="thanks" class="thanks">
+          <base-button class="close" icon="close"/>
+          <h2>Thank you for speculating!</h2>
+          <p>We've added your submission<br>to our archive</p>
+          <div class="btn share">
+            <transition name="fade-alt-2">
+              <base-button v-if="!copied" icon="publish" key="share" @click="share">Share your speculation</base-button>
+              <base-button v-else icon="allowed" key="copied">Link copied to clipboard</base-button>
+            </transition>
+          </div>
+          <div class="btn">
+            <base-button icon="next" @click="explore">Explore the archive</base-button>
+          </div>
+          <div class="btn">
+            <base-button icon="undo" @click="another">Make another speculation</base-button>
+          </div>
+        </div>
       </transition-group>
     </div>
   </div>
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
+import { mapState, mapGetters, mapActions } from 'vuex'
 import BaseButton from '../components/BaseButton.vue'
 import BaseImage from '../components/BaseImage.vue'
 import BaseProgress from '../components/BaseProgress.vue'
@@ -53,7 +70,9 @@ export default {
   data () {
     return {
       maxStep: 0,
-      disableCamera: false
+      disableCamera: false,
+      copied: false,
+      speculation: null
       // height: 0
       // throttle: null
     }
@@ -85,12 +104,37 @@ export default {
   //   addEventListener('resize', this.resize)
   // },
   methods: {
+    ...mapActions('data', ['wipe']),
     capture () {
       this.$refs.camera.capture()
     },
     retake () {
       this.step = 2
-      // this.$refs.camera.retake()
+      // this.$refs.camera.retake()`
+    },
+    thanks (speculation) {
+      this.speculation = speculation
+      this.step = 5
+    },
+    share () {
+      navigator.clipboard.writeText(`${location.origin}/${this.$route.params.challenge}/${this.speculation?.id}`).then(() => {
+        this.copied = true
+      })
+    },
+    explore () {
+      this.$router.push({
+        name: this.speculation?.id != null ? 'speculation' : 'scenario',
+        params: {
+          challenge: this.$route.params.challenge,
+          speculation: this.speculation?.id
+        }
+      })
+      this.wipe()
+    },
+    another () {
+      this.step = 2
+      this.maxStep = 2
+      this.wipe()
     }
     // resize () {
     //   // this.height = innerHeight
@@ -103,21 +147,7 @@ export default {
   watch: {
     step: {
       handler () {
-        // window.scrollTo(0, document.body.scrollHeight)
-        if (this.step > this.maxStep) {
-          this.step = this.maxStep
-          return
-        }
-        if (this.step === 2 && this.maxStep > 2) {
-          // this.$refs.camera.retake()
-        }
-        if (this.step === 3) {
-          // this.$refs.camera.captured = true
-          // this.$refs.camera.draw = false
-        }
-        if (this.step === 4) {
-          // this.$refs.camera.draw = true
-        }
+        if (this.step > this.maxStep) this.step = this.maxStep
       },
       immediate: true
     }
@@ -179,6 +209,43 @@ export default {
             fill: $color-white;
           }
         }
+      }
+    }
+
+    .thanks {
+      position: relative;
+      z-index: 5;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      // align-items: center;
+      padding: $page-padding;
+      max-width: $extra-narrow;
+
+      .btn {
+        align-self: flex-start;
+
+        +.btn {
+          margin-top: $spacing / 2;
+        }
+      }
+
+      .close {
+        align-self: flex-end;
+      }
+
+      h2 {
+        margin: $spacing * 4 0 $spacing;
+      }
+      p {
+        margin-bottom: $spacing;
+      }
+
+      .share {
+        white-space: nowrap;
+        position: relative;
       }
     }
   }

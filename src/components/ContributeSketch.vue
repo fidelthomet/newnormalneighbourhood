@@ -302,14 +302,14 @@ export default {
         texts: this.texts.map(t => ({ transform: t.transform, rows: t.rows }))
       })
       const speculation = await this.commitSpeculation(this.$route.params.challenge)
-      console.log(speculation)
-      this.$router.push({
-        name: 'speculation',
-        params: {
-          challenge: this.$route.params.challenge,
-          speculation: speculation.id
-        }
-      })
+      this.$emit('next', speculation)
+      // this.$router.push({
+      //   name: 'speculation',
+      //   params: {
+      //     challenge: this.$route.params.challenge,
+      //     speculation: speculation.id
+      //   }
+      // })
     }
   },
   watch: {
