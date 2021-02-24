@@ -2,7 +2,7 @@
   <div class="contribute-permissions">
     <div class="permissions">
       <p>
-        When droughts and heatwaves become the new normal, how does your neighbourhood change?
+        {{challenge?.permissions}}
       </p>
       <p>
         To participate in this speculation you’ll need about 5 minutes and to be outside and close to Berlin Hermannplatz.
