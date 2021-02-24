@@ -24,7 +24,7 @@
         <contribute-text v-if="step === 3" key="text" @next="step = 4"/>
         <contribute-sketch v-if="step === 4" key="sketch" @next="thanks"/>
         <div v-if="step === 5" key="thanks" class="thanks">
-          <base-button class="close" icon="close"/>
+          <base-button class="close" @click="$router.push({name: 'Home'})" icon="close"/>
           <h2>Thank you for speculating!</h2>
           <p>We've added your submission<br>to our archive</p>
           <div class="btn share">
