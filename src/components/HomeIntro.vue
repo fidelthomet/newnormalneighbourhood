@@ -1,11 +1,12 @@
 <template>
   <div class="home-intro">
     <div class="bg"/>
+    <nav class="no-hyphens">
+      <router-link to="about">about</router-link> <router-link to="about">privacy</router-link>
+    </nav>
     <h1>New&nbsp;Normal<br>Neighbourhood</h1>
     <p class="no-hyphens">
-      explore and contribute situated <br>
-      speculations on local responses <br>
-      to&nbsp;potential future crises
+      A toolkit for finding speculative responses to&nbsp;future crises
     </p>
     <div class="arrow">
       ↓
@@ -23,7 +24,7 @@ export default {
 @import "@/assets/style/global";
 .home-intro {
   min-height: 70vh;
-  padding: $spacing * 4 $spacing $spacing $spacing;
+  padding: $spacing $spacing $spacing $spacing;
   display: flex;
   flex-direction: column;
   background: $color-accent;
@@ -34,6 +35,20 @@ export default {
   }
   .arrow {
     margin-top: auto;
+  }
+  p + p {
+    margin-top: $spacing;
+  }
+
+  nav {
+    margin-bottom: $spacing * 3;
+    text-align: right;
+    a {
+      // font-size: 0.8em;
+      opacity: 0.5;
+      color: $color-accent-dark;
+      // text-decoration: underline;
+    }
   }
 }
 </style>
