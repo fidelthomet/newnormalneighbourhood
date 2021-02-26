@@ -1,5 +1,5 @@
-const api = 'https://api.nnn.ft0.ch'
-const files = 'https://files.nnn.ft0.ch'
+const api = 'https://api.newnormalneighbourhood.org'
+const files = 'https://files.newnormalneighbourhood.org'
 
 export default {
   namespaced: true,
