@@ -1,9 +1,9 @@
 <template>
   <div class="contribute subpage" :style="{height: `${height}px`}">
-    <base-image :img="photo || challenge?.img" :blur="step !== 2 && step !== 4" :tint="step ===  0 || step ===  3 || step === 5" showSlot>
+    <base-image :img="photo || challenge?.img" :blur="step < 2 || step > 3" :tint="step === 0 || step === 4" showSlot>
       <contribute-camera v-if="!disableCamera && (step === 1 || step === 2)" ref="camera" @next="step = 3" :challenge="challenge"/>
     </base-image>
-    <base-progress :progress="step" :items="5"/>
+    <base-progress :progress="step" :items="4"/>
     <div class="content" :class="{blend: step !== 2}">
       <!-- <router-view :challenge="challenge" @next="next"/> -->
       <transition-group name="fade">
@@ -12,7 +12,7 @@
         <div v-if="step === 2" key="capture" class="capture">
           <base-button icon="camera" tint-icon>
             <strong>Capture</strong><br>
-            <span>Identify a vulnerable artefact and photograph it</span>
+            <span>Where do you see potential for responding to the crisis?</span>
           </base-button>
           <div class="release">
             <svg width="60" height="60" viewBox="-30 -30 60 60">
@@ -21,9 +21,8 @@
             </svg>
           </div>
         </div>
-        <contribute-text v-if="step === 3" key="text" @next="step = 4"/>
-        <contribute-sketch v-if="step === 4" key="sketch" @next="thanks"/>
-        <div v-if="step === 5" key="thanks" class="thanks">
+        <contribute-sketch v-if="step === 3" key="sketch" @next="thanks"/>
+        <div v-if="step === 4" key="thanks" class="thanks">
           <base-button class="close" @click="$router.push({name: 'Home'})" icon="close"/>
           <h2>Thank you for speculating!</h2>
           <p>We've added your submission<br>to our archive</p>
@@ -54,7 +53,6 @@ import ContributeCamera from '../components/ContributeCamera.vue'
 import ContributeChat from '../components/ContributeChat.vue'
 import ContributePermissions from '../components/ContributePermissions.vue'
 import ContributeSketch from '../components/ContributeSketch.vue'
-import ContributeText from '../components/ContributeText.vue'
 export default {
   name: 'contribute',
   components: {
@@ -63,7 +61,6 @@ export default {
     BaseProgress,
     ContributeChat,
     ContributeCamera,
-    ContributeText,
     ContributeSketch,
     BaseButton
   },
@@ -114,7 +111,7 @@ export default {
     },
     thanks (speculation) {
       this.speculation = speculation
-      this.step = 5
+      this.step = 4
     },
     share () {
       navigator.clipboard.writeText(`${location.origin}/${this.$route.params.challenge}/${this.speculation?.id}`).then(() => {
@@ -147,7 +144,7 @@ export default {
   watch: {
     step: {
       handler () {
-        if (this.step > this.maxStep) this.step = this.maxStep
+        if (this.step > this.maxStep && this.step !== 4) this.step = this.maxStep
       },
       immediate: true
     }

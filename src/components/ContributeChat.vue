@@ -1,5 +1,8 @@
 <template>
   <div class="contribute-chat">
+    <transition name="fade-alt">
+      <base-button v-if="skip" class="skip" @click="$emit('next')" icon="next">skip intro</base-button>
+    </transition>
     <div class="messages">
       <template v-for="(m, i) in messages" :key="i">
         <contribute-chat-message :msg="m[1]" :user="m[0]"/>
@@ -16,10 +19,11 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import BaseButton from './BaseButton.vue'
 import ContributeChatMessage from './ContributeChatMessage.vue'
 // import BaseImage from './BaseImage.vue'
 export default {
-  components: { ContributeChatMessage },
+  components: { ContributeChatMessage, BaseButton },
   name: 'contribute-chat',
   props: {
     challenge: {
@@ -29,6 +33,7 @@ export default {
   },
   data () {
     return {
+      skip: true,
       progress: 0,
       timeout: null,
       messages: [],
@@ -59,6 +64,7 @@ export default {
       }, Math.max(this.challenge.chat[this.progress][1].length * 25, 1500))
     },
     input (message) {
+      this.skip = false
       if (message[1] === -1) {
         this.$emit('next')
         return
@@ -84,12 +90,18 @@ export default {
   align-items: flex-end;
   justify-items: flex-end;
   // background: $color-black;
+  padding: $page-padding;
+  .skip {
+    position: absolute;
+    top: $spacing * 2;
+    right: $spacing;
+  }
 
   .messages {
     display: flex;
     width: 100%;
     flex-direction: column;
-    padding: $page-padding;
+
     max-width: $extra-narrow;
 
     .options {

@@ -11,7 +11,7 @@
       <g class="texts" :class="{editable: mode !== 'draw' && mode !== 'erase'}">
         <text v-for="t in texts" :key="t.index" :transform="t.transform"
           v-gesture="onGesture">
-          <tspan v-for="(l, i) in t.rows" :key="i" :dy="i === 0 ? 36 : 36*1.25" x="0">
+          <tspan v-for="(l, i) in t.rows" :key="i" :dy="i === 0 ? 64 : 64*1.25" x="0">
             {{l}}
           </tspan>
         </text>
@@ -20,14 +20,16 @@
     <div class="edit" :style="{height: `${height}px`}">
       <div class="toolbar navbar">
         <base-button icon="sketch" tint-icon class="task" :collapse="collapseTask" @click="collapseTask = !collapseTask">
-          <strong>Ideate</strong><br>
-          <span>Imagine an alternative! What can we do to increase resilience?</span>
+          <strong>Speculate</strong><br>
+          <span>How does the response unfold? What will change here?</span>
         </base-button>
         <div class="spacer"/>
-        <base-button :icon="publishing ? 'requested' : 'publish'" reverse :tint-icon="actions.length > 0" :disabled="actions.length === 0" @click="publish">publish</base-button>
+        <transition name="fade-alt">
+          <base-button v-if="actions.length > 0" :icon="publishing ? 'requested' : 'publish'" reverse :tint-icon="actions.length > 0" :disabled="actions.length === 0" @click="publish">publish</base-button>
+        </transition>
       </div>
       <div class="toolbar">
-        <base-button icon="undo" :disabled="actions.length === 0" @click="undo"/>
+        <base-button :icon="actions.length === 0 ? 'camera' : 'undo'" @click="undo"/>
         <div class="spacer"/>
         <base-button icon="type" @click="setMode('type')" />
         <base-button icon="erase" @click="setMode('erase')" :tint-icon="mode === 'erase'" />
@@ -293,7 +295,8 @@ export default {
       }
     },
     undo () {
-      this.actions.pop()
+      if (this.actions.length > 0) this.actions.pop()
+      else this.$router.go(-1)
     },
     async publish () {
       this.publishing = true
@@ -353,7 +356,7 @@ export default {
       // pointer-events: none;
       text {
         fill: $color-accent;
-        font-size: 36px;
+        font-size: 64px;
         font-weight: 700;
         text-anchor: middle;
         pointer-events: none;
@@ -397,11 +400,13 @@ export default {
     }
 
     .text-input {
-      font-size: 36px;
+      font-size: 64px;
       font-weight: 700;
       color: $color-accent;
       outline: none;
       text-align: center;
+      // white-space: nowrap;
+
       // position: absolute;
       // top: 25vh;
 
