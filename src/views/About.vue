@@ -14,6 +14,7 @@
 .about {
   background: $color-accent;
   padding: $spacing;
+  padding-bottom: $spacing * 8;
   min-height: 100vh;
 
   nav {
