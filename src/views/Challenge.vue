@@ -4,7 +4,7 @@
       {{challenge?.title}}
     </challenge-intro>
     <challenge-detail :challenge="challenge"/> -->
-      <base-gallery :items="speculation == null ? 1 : 2"
+      <base-gallery :items="speculation == null ? 1 : 3"
         @next="next" @prev="prev">
         <template v-slot="{ step }">
           <router-view v-if="challenge" v-slot="{ Component }">

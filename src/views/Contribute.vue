@@ -1,18 +1,19 @@
 <template>
   <div class="contribute subpage" :style="{height: `${height}px`}">
-    <base-image :img="photo || challenge?.img" :blur="step < 2 || step > 3" :tint="step === 0 || step === 4" showSlot>
+    <base-image :img="photo || challenge?.img" :blur="step < 2 || step === 3 || step === 5" :tint="step === 0 || step === 3 || step === 5" showSlot>
       <contribute-camera v-if="!disableCamera && (step === 1 || step === 2)" ref="camera" @next="step = 3" :challenge="challenge"/>
     </base-image>
-    <base-progress :progress="step" :items="4"/>
+    <base-progress :progress="step" :items="5"/>
     <div class="content" :class="{blend: step !== 2}">
       <!-- <router-view :challenge="challenge" @next="next"/> -->
       <transition-group name="fade">
         <contribute-permissions v-if="step === 0" key="permissions" @next="step = 1" :challenge="challenge"/>
         <contribute-chat v-if="step === 1" @next="step = 2" :challenge="challenge"/>
         <div v-if="step === 2" key="capture" class="capture">
-          <base-button icon="camera" tint-icon>
+          <base-button icon="camera" tint-icon class="task">
             <strong>Capture</strong><br>
-            <span>Where do you see potential for responding to the crisis?</span>
+            <!-- Capture -->
+            <span class="task-detail">Where do you want to place your proposal?</span>
           </base-button>
           <div class="release">
             <svg width="60" height="60" viewBox="-30 -30 60 60">
@@ -21,8 +22,9 @@
             </svg>
           </div>
         </div>
-        <contribute-sketch v-if="step === 3" key="sketch" @next="thanks"/>
-        <div v-if="step === 4" key="thanks" class="thanks">
+        <contribute-text v-if="step === 3" key="text" @next="step = 4"/>
+        <contribute-sketch v-if="step === 4" key="sketch" @next="thanks"/>
+        <div v-if="step === 5" key="thanks" class="thanks">
           <base-button class="close" @click="$router.push({name: 'Home'})" icon="close"/>
           <h2>Thank you for speculating!</h2>
           <p>We've added your submission<br>to our archive</p>
@@ -53,6 +55,7 @@ import ContributeCamera from '../components/ContributeCamera.vue'
 import ContributeChat from '../components/ContributeChat.vue'
 import ContributePermissions from '../components/ContributePermissions.vue'
 import ContributeSketch from '../components/ContributeSketch.vue'
+import ContributeText from '../components/ContributeText.vue'
 export default {
   name: 'contribute',
   components: {
@@ -62,6 +65,7 @@ export default {
     ContributeChat,
     ContributeCamera,
     ContributeSketch,
+    ContributeText,
     BaseButton
   },
   data () {
@@ -111,7 +115,7 @@ export default {
     },
     thanks (speculation) {
       this.speculation = speculation
-      this.step = 4
+      this.step = 5
     },
     share () {
       navigator.clipboard.writeText(`${location.origin}/${this.$route.params.challenge}/${this.speculation?.id}`).then(() => {
@@ -144,7 +148,7 @@ export default {
   watch: {
     step: {
       handler () {
-        if (this.step > this.maxStep && this.step !== 4) this.step = this.maxStep
+        if (this.step > this.maxStep && this.step !== 5) this.step = this.maxStep
       },
       immediate: true
     }
@@ -187,6 +191,13 @@ export default {
 
       .base-button {
         align-self: flex-start;
+
+        &.task {
+          .task-detail {
+            display: block;
+            margin-top: $spacing / 4;
+          }
+        }
       }
 
       .release {

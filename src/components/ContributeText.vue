@@ -1,25 +1,32 @@
 <template>
   <div class="contribute-text">
     <div class="nav">
-      <base-button icon="type"><strong>Describe</strong></base-button>
+      <!-- <base-button icon="type">
+        Describe
+      </base-button> -->
       <!-- <transition name="fade-alt">
         <base-button icon="next" icon-light v-if="valid" @click="$emit('next')"/>
       </transition> -->
     </div>
     <div class="form">
       <div class="label">
-        Artefact
-        <span class="counter" :class="{warn: title.length > 25}">{{title.length}}/25</span>
+        <span>Aim</span>
+        <span class="counter" :class="{warn: title.length > 40}">{{title.length}}/40</span>
       </div>
-      <h2 ref="title" contenteditable placeholder="What did you capture?" @input="input('title', $event)"/>
+      <h2 :class="{warn: title.length > 40}" ref="title" contenteditable placeholder="What do you want to achieve?" @input="input('title', $event)"/>
       <div class="label">
-        <span>Consequences</span>
-        <span class="counter" :class="{warn: title.length > 150}">{{description.length}}/150</span>
+        <span>Proposal</span>
+        <span class="counter" :class="{warn: description.length > 160}">{{description.length}}/160</span>
       </div>
-      <p ref="description" contenteditable placeholder="Whatʼs at risk? Whatʼs the impact on the neighbourhood?" @input="input('description', $event)"/>
+      <p :class="{warn: description.length > 160}" ref="description" contenteditable placeholder="How are you going to achieve that? What will need to change?" @input="input('description', $event)"/>
+      <!-- <div class="label">
+        <span>Proposal</span>
+        <span class="counter" :class="{warn: title.length > 100}">{{description.length}}/100</span>
+      </div>
+      <p :class="{warn: description.length > 100}" ref="description" contenteditable placeholder="What needs to change? What can we do to increase resilience?" @input="input('description', $event)"/> -->
       <!-- <div class="label">
         <span>Opportunity</span>
-        <span class="counter" :class="{warn: title.length > 150}">{{opportunity.length}}/150</span>
+        <span class="counter" :class="{warn: title.length > 100}">{{opportunity.length}}/100</span>
       </div>
       <p contenteditable placeholder="What can be done to adapt and mitigate risks?" @input="input('opportunity', $event)"/> -->
     </div>
@@ -98,10 +105,16 @@ export default {
 
   .form {
     margin-top: $spacing * 4;
+    margin-bottom: $spacing * 2;
 
     h2, p {
       outline: none;
-      margin: $spacing / 2 0 $spacing;
+      margin: $spacing / 2 0 $spacing * 2;
+      transition: color $transition;
+
+      &.warn {
+        color: darken($color-accent, 35);
+      }
     }
 
     .label {
@@ -112,6 +125,7 @@ export default {
       .counter {
         // text-align: right;
         font-size: 0.7em;
+        transition: color $transition;
         &.warn {
           color: darken($color-accent, 35);
         }

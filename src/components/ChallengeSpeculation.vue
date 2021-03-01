@@ -2,12 +2,12 @@
   <div class="challenge-speculation">
       <!-- <div class="bg" :style="{'background-image': `url(${challenge.img})` }"/> -->
 
-          <base-image showSlot>
+          <base-image :blur="step === 1" :tint="step === 1" showSlot>
             <div class="img-wrapper">
               <!-- <div class="img" :style="{'background-image': `url(${photo})`}"/> -->
               <img class="img" :src="speculation?.img">
               <transition name="fade-alt">
-                <div v-if="step === 1" class="drawing" ref="drawing">
+                <div v-if="step === 2" class="drawing" ref="drawing">
                   <svg :viewBox="`0 0 ${imgWidth} ${imgHeight}`">
                     <!-- <path :style="{'stroke-width': details.sketchDimensions[0] * 0.02}" v-for="(path, i) in details.sketch" :key="i" :d="path"/> -->
                     <g class="paths">
@@ -25,12 +25,12 @@
               </transition>
             </div>
           </base-image>
-          <!-- <transition name="fade">
+          <transition name="fade">
             <div class="text-layer" v-if="step === 1">
               <h2>{{details.title}}</h2>
               <p>{{details.description}}</p>
             </div>
-          </transition> -->
+          </transition>
       <!-- <div class="detail">
         <h2>{{challenge.title}}</h2>
         <div class="button-group">

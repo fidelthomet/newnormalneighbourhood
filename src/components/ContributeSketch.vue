@@ -20,8 +20,8 @@
     <div class="edit" :style="{height: `${height}px`}">
       <div class="toolbar navbar">
         <base-button icon="sketch" tint-icon class="task" :collapse="collapseTask" @click="collapseTask = !collapseTask">
-          <strong>Speculate</strong><br>
-          <span>How does the response unfold? What will change here?</span>
+          <strong>Illustrate</strong><br>
+          <span class="task-detail">How does your proposal change this neighbourhood?</span>
         </base-button>
         <div class="spacer"/>
         <transition name="fade-alt">
@@ -451,6 +451,11 @@ export default {
         .task {
           position: absolute;
           z-index: 1;
+
+          .task-detail {
+            display: block;
+            margin-top: $spacing / 4;
+          }
         }
       }
     }
