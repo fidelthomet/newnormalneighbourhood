@@ -2,7 +2,8 @@
   <div class="home-intro">
     <div class="bg"/>
     <nav class="no-hyphens">
-      <router-link to="about">about</router-link> <router-link to="about">privacy</router-link>
+      <router-link to="about">about</router-link>
+      <router-link to="privacy">privacy</router-link>
     </nav>
     <h1>New&nbsp;Normal<br>Neighbourhood</h1>
     <p class="no-hyphens">
@@ -48,6 +49,9 @@ export default {
       opacity: 0.5;
       color: $color-accent-dark;
       // text-decoration: underline;
+      &+a {
+        margin-left: $spacing / 2;
+      }
     }
   }
 }
