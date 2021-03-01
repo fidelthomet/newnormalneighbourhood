@@ -5,7 +5,7 @@
         {{challenge?.permissions}}
       </p>
       <p>
-        To participate in this speculation you’ll need about 5 minutes and to be outside and close to Berlin Hermannplatz.
+        To participate in this speculation you’ll need about 5 minutes and to be outside.
       </p>
       <p>
         If you haven’t already, open this website on your phone and head outdoors!
@@ -18,6 +18,9 @@
         <base-button :icon="statusCamera" @click="allowCamera">Allow camera access</base-button>
         <base-button icon="next" :disabled="!permissionsGranted" @click="$emit('next')">Enter the New Normal</base-button>
       </div>
+      <p class="small-print">
+        Proposals will be published on this website anonymously under the public domain. <router-link to="/privacy">learn more</router-link>
+      </p>
     </div>
   </div>
 </template>
@@ -70,7 +73,7 @@ export default {
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      margin-bottom: $spacing / 2;
+      // margin-bottom: $spacing / 2;
 
       .base-button {
         margin-bottom: $spacing / 2;
@@ -94,6 +97,18 @@ export default {
       //   // background: $color-white;
       //   // color: $color-accent;
       // }
+    }
+
+    .small-print {
+      margin-top: $spacing;
+      color: $color-accent-dark;
+      opacity: 0.8;
+      font-size: 0.8em;
+
+      a {
+        color: inherit;
+        text-decoration: underline;
+      }
     }
   }
 }

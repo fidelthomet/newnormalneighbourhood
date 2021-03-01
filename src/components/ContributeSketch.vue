@@ -1,47 +1,52 @@
 <template>
   <div class="contribute-sketch">
+    <!-- <svg class="sketch" :viewBox="viewBox" ref="sketch"> -->
     <svg class="sketch" :viewBox="viewBox" ref="sketch"
       @touchstart="startDrawing" @mousedown="startDrawing"
       @touchmove="touchDraw" @mousemove="mouseDraw"
       @touchend="endDrawing" @touchcancel="endDrawing"
       @mouseup="endDrawing" @mouseleave="endDrawing" @mouseout="endDrawing">
       <g class="paths">
-        <path v-for="p in paths" :key="p.index" :d="p.d"/>
+        <path v-for="p in paths" :key="p.index" :d="p.d" :class="[p.strokeWidth, p.color]"/>
       </g>
-      <g class="texts" :class="{editable: mode !== 'draw' && mode !== 'erase'}">
+      <!-- <g class="texts" :class="{editable: mode !== 'draw' && mode !== 'erase'}">
         <text v-for="t in texts" :key="t.index" :transform="t.transform"
           v-gesture="onGesture">
           <tspan v-for="(l, i) in t.rows" :key="i" :dy="i === 0 ? 64 : 64*1.25" x="0">
             {{l}}
           </tspan>
         </text>
-      </g>
+      </g> -->
     </svg>
     <div class="edit" :style="{height: `${height}px`}">
-      <div class="toolbar navbar">
-        <base-button icon="sketch" tint-icon class="task" :collapse="collapseTask" @click="collapseTask = !collapseTask">
+      <div class="taskbar">
+        <base-button icon="sketch" tint-icon class="task">
           <strong>Illustrate</strong><br>
           <span class="task-detail">How does your proposal change this neighbourhood?</span>
         </base-button>
-        <div class="spacer"/>
-        <transition name="fade-alt">
-          <base-button v-if="actions.length > 0" :icon="publishing ? 'requested' : 'publish'" reverse :tint-icon="actions.length > 0" :disabled="actions.length === 0" @click="publish">publish</base-button>
-        </transition>
       </div>
       <div class="toolbar">
+        <base-button icon="draw" round @click="setMode('draw', 's')" :tint-icon="mode === 'draw' && strokeWidth === 's'" />
+        <base-button icon="draw" round @click="setMode('draw', 'm')" :tint-icon="mode === 'draw' && strokeWidth === 'm'" />
+        <base-button icon="draw" round @click="setMode('draw', 'l')" :tint-icon="mode === 'draw' && strokeWidth === 'l'" />
+        <base-button icon="erase" round @click="setMode('erase')" :tint-icon="mode === 'erase'" />
+        <div class="spacer"/>
+        <base-button icon="unknown" round @click="setColor('accent')" :tint-icon="color === 'accent'" :disabled="mode === 'erase'" />
+        <base-button icon="unknown" round @click="setColor('white')" :tint-icon="color === 'white'" :disabled="mode === 'erase'" />
+        <base-button icon="unknown" round @click="setColor('black')" :tint-icon="color === 'black'" :disabled="mode === 'erase'" />
+      </div>
+      <div class="navbar">
         <base-button :icon="actions.length === 0 ? 'camera' : 'undo'" @click="undo"/>
         <div class="spacer"/>
-        <base-button icon="type" @click="setMode('type')" />
-        <base-button icon="erase" @click="setMode('erase')" :tint-icon="mode === 'erase'" />
-        <base-button icon="draw" @click="setMode('draw')" :tint-icon="mode === 'draw'" />
+        <base-button :icon="publishing ? 'requested' : 'publish'" reverse :tint-icon="paths.length > 0" :disabled="paths.length === 0" @click="publish">publish</base-button>
       </div>
     </div>
-    <div class="text-overlay" :class="{ show: mode === 'type'}">
+    <!-- <div class="text-overlay" :class="{ show: mode === 'type'}">
       <div class="text-input" contenteditable ref="input" @blur="$nextTick(() => setMode(null))">&nbsp;</div>
       <div class="text-buttons">
         <base-button>done</base-button>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -62,7 +67,9 @@ export default {
   },
   data () {
     return {
-      mode: null,
+      mode: 'draw',
+      strokeWidth: 25,
+      color: 'accent',
       actions: [],
       transformBy: {
         x: 0,
@@ -95,104 +102,111 @@ export default {
         .map((action, index) => {
           return {
             d: action.d || smoothPath(action.points),
-            index
+            index,
+            strokeWidth: action.strokeWidth,
+            color: action.color
           }
         }).filter((action, i) => this.erasedPaths.indexOf(i) === -1)
-    },
-    texts () {
-      return this.actions
-        .filter(action => action.type === 'text')
-        .map((action) => {
-          const transform = this.actions.filter(a => a.type === 'transform').reverse().find(a => a.index === action.index)?.transform || action.transform
-          let text = this.actions.filter(a => a.type === 'edit-text' && a.index === action.index && !a.active).reverse()[0]?.text
-          if (text == null) text = action.text
-          if (text === '') return null
-          return {
-            rows: text.split('\n'),
-            transform: `translate(${transform.x} ${transform.y}) scale(${transform.scale}) rotate(${transform.rotate})`,
-            index: action.index
-          }
-        })
-        .filter(action => action !== null)
     }
+    // texts () {
+    //   return this.actions
+    //     .filter(action => action.type === 'text')
+    //     .map((action) => {
+    //       const transform = this.actions.filter(a => a.type === 'transform').reverse().find(a => a.index === action.index)?.transform || action.transform
+    //       let text = this.actions.filter(a => a.type === 'edit-text' && a.index === action.index && !a.active).reverse()[0]?.text
+    //       if (text == null) text = action.text
+    //       if (text === '') return null
+    //       return {
+    //         rows: text.split('\n'),
+    //         transform: `translate(${transform.x} ${transform.y}) scale(${transform.scale}) rotate(${transform.rotate})`,
+    //         index: action.index
+    //       }
+    //     })
+    //     .filter(action => action !== null)
+    // }
   },
   methods: {
     ...mapActions('data', ['storeSketch']),
     ...mapActions('api', ['commitSpeculation']),
-    setMode (mode) {
-      if (this.mode === 'type') {
-        if (this.action?.type === 'edit-text') {
-          this.updateText(this.$refs.input.innerText.trim())
-        } else {
-          this.addText(this.$refs.input.innerText.trim())
-        }
-      }
+    setMode (mode, strokeWidth) {
+      // if (this.mode === 'type') {
+      //   if (this.action?.type === 'edit-text') {
+      //     this.updateText(this.$refs.input.innerText.trim())
+      //   } else {
+      //     this.addText(this.$refs.input.innerText.trim())
+      //   }
+      // }
 
-      if (mode === this.mode) this.mode = null
-      else this.mode = mode
+      // if (mode === this.mode) this.mode = null
+      // else
+      this.mode = mode
+      this.strokeWidth = strokeWidth
 
-      if (this.mode === 'type') {
-        this.$refs.input.innerHTML = '&nbsp;'
-        this.$refs.input.focus()
-      }
+      // if (this.mode === 'type') {
+      //   this.$refs.input.innerHTML = '&nbsp;'
+      //   this.$refs.input.focus()
+      // }
     },
-    addText (text, offset = 0) {
-      if (text.length === 0) return
-      this.updateTransform()
-      this.actions.push({
-        type: 'text',
-        text,
-        transform: {
-          x: this.imgWidth / 2,
-          y: (this.height / 4 - this.transformBy.y + offset) * this.transformBy.scale,
-          scale: this.transformBy.scale,
-          rotate: 0
-        },
-        index: this.actions.filter(action => action.type === 'text').length
-      })
+    setColor (color) {
+      this.color = color
     },
-    editText (index) {
-      this.setMode('type')
-      this.$refs.input.innerHTML = this.actions.filter(action => (action.type === 'text' || action.type === 'edit-text') && action.index === index).reverse()[0].text.split('\n').join('<br>')
-      this.actions.push({
-        type: 'edit-text',
-        active: true,
-        index
-      })
-      // move cursor to the end of contenteditable
-      if (document.createRange) {
-        const range = document.createRange()
-        range.selectNodeContents(this.$refs.input)
-        range.collapse(false)
-        const selection = window.getSelection()
-        selection.removeAllRanges()
-        selection.addRange(range)
-      }
-    },
-    updateText (text) {
-      this.action.text = text
-      this.action.active = false
-    },
-    onGesture (event, transform, index) {
-      if (event === 'tap') {
-        this.editText(index)
-        return
-      }
-      if (event === 'start') {
-        this.updateTransform()
-        this.actions.push({
-          type: 'transform',
-          active: true,
-          index,
-          transform: this.transformObj(transform, index)
-        })
-      } else if (event === 'move') {
-        if (this.action == null) return
-        this.action.transform = this.transformObj(transform, index)
-      } else if (event === 'end') {
-        this.action.active = false
-      }
-    },
+    // addText (text, offset = 0) {
+    //   if (text.length === 0) return
+    //   this.updateTransform()
+    //   this.actions.push({
+    //     type: 'text',
+    //     text,
+    //     transform: {
+    //       x: this.imgWidth / 2,
+    //       y: (this.height / 4 - this.transformBy.y + offset) * this.transformBy.scale,
+    //       scale: this.transformBy.scale,
+    //       rotate: 0
+    //     },
+    //     index: this.actions.filter(action => action.type === 'text').length
+    //   })
+    // },
+    // editText (index) {
+    //   this.setMode('type')
+    //   this.$refs.input.innerHTML = this.actions.filter(action => (action.type === 'text' || action.type === 'edit-text') && action.index === index).reverse()[0].text.split('\n').join('<br>')
+    //   this.actions.push({
+    //     type: 'edit-text',
+    //     active: true,
+    //     index
+    //   })
+    //   // move cursor to the end of contenteditable
+    //   if (document.createRange) {
+    //     const range = document.createRange()
+    //     range.selectNodeContents(this.$refs.input)
+    //     range.collapse(false)
+    //     const selection = window.getSelection()
+    //     selection.removeAllRanges()
+    //     selection.addRange(range)
+    //   }
+    // },
+    // updateText (text) {
+    //   this.action.text = text
+    //   this.action.active = false
+    // },
+    // onGesture (event, transform, index) {
+    //   if (event === 'tap') {
+    //     this.editText(index)
+    //     return
+    //   }
+    //   if (event === 'start') {
+    //     this.updateTransform()
+    //     this.actions.push({
+    //       type: 'transform',
+    //       active: true,
+    //       index,
+    //       transform: this.transformObj(transform, index)
+    //     })
+    //   } else if (event === 'move') {
+    //     if (this.action == null) return
+    //     this.action.transform = this.transformObj(transform, index)
+    //   } else if (event === 'end') {
+    //     this.action.active = false
+    //   }
+    // },
     startDrawing (e) {
       e.preventDefault()
       if (e.touches?.length > 1) return
@@ -201,6 +215,8 @@ export default {
       if (this.mode === 'draw') {
         this.actions.push({
           type: 'path',
+          strokeWidth: this.strokeWidth,
+          color: this.color,
           active: true,
           points: []
         })
@@ -280,20 +296,20 @@ export default {
         y: (e.clientY - this.transformBy.y) * this.transformBy.scale
       }
     },
-    transformObj (transform, index) {
-      const current = this.actions
-        .filter(action => action.type === 'text' || action.type === 'transform')
-        .reverse()
-        .find(action => action.index === index && !action.active)
+    // transformObj (transform, index) {
+    //   const current = this.actions
+    //     .filter(action => action.type === 'text' || action.type === 'transform')
+    //     .reverse()
+    //     .find(action => action.index === index && !action.active)
 
-      const { transformBy } = this
-      return {
-        x: current.transform.x + transform.x * transformBy.scale,
-        y: current.transform.y + transform.y * transformBy.scale,
-        rotate: current.transform.rotate + transform.rotate,
-        scale: current.transform.scale * transform.scale
-      }
-    },
+    //   const { transformBy } = this
+    //   return {
+    //     x: current.transform.x + transform.x * transformBy.scale,
+    //     y: current.transform.y + transform.y * transformBy.scale,
+    //     rotate: current.transform.rotate + transform.rotate,
+    //     scale: current.transform.scale * transform.scale
+    //   }
+    // },
     undo () {
       if (this.actions.length > 0) this.actions.pop()
       else this.$router.go(-1)
@@ -301,8 +317,8 @@ export default {
     async publish () {
       this.publishing = true
       await this.storeSketch({
-        paths: this.paths.map(p => p.d),
-        texts: this.texts.map(t => ({ transform: t.transform, rows: t.rows }))
+        paths: this.paths.map(p => ({ d: p.d, color: p.color, strokeWidth: p.strokeWidth }))
+        // texts: this.texts.map(t => ({ transform: t.transform, rows: t.rows }))
       })
       const speculation = await this.commitSpeculation(this.$route.params.challenge)
       this.$emit('next', speculation)
@@ -316,10 +332,10 @@ export default {
     }
   },
   watch: {
-    'actions.length' (length) {
-      if (length === 0) this.collapseTask = false
-      else this.collapseTask = true
-    }
+    // 'actions.length' (length) {
+    //   if (length === 0) this.collapseTask = false
+    //   else this.collapseTask = true
+    // }
   }
 }
 </script>
@@ -346,29 +362,42 @@ export default {
 
     path {
       fill: none;
-      stroke: $color-accent;
       stroke-linecap: round;
       stroke-linejoin: round;
-      stroke-width: 20;
       pointer-events: none;
-    }
-    .texts {
-      // pointer-events: none;
-      text {
-        fill: $color-accent;
-        font-size: 64px;
-        font-weight: 700;
-        text-anchor: middle;
-        pointer-events: none;
-        // dominant-baseline: hanging;
-        touch-action: none;
+      stroke-width: 25;
+      stroke: $color-accent;
+
+      &.s {
+        stroke-width: 12.5;
       }
-      &.editable {
-        text {
-          pointer-events: all;
-        }
+      &.l {
+        stroke-width: 50;
+      }
+      &.white {
+        stroke: $color-white;
+      }
+      &.black {
+        stroke: $color-black;
       }
     }
+    // .texts {
+    //   // pointer-events: none;
+    //   text {
+    //     fill: $color-accent;
+    //     font-size: 64px;
+    //     font-weight: 700;
+    //     text-anchor: middle;
+    //     pointer-events: none;
+    //     // dominant-baseline: hanging;
+    //     touch-action: none;
+    //   }
+    //   &.editable {
+    //     text {
+    //       pointer-events: all;
+    //     }
+    //   }
+    // }
 
   }
 
@@ -426,31 +455,47 @@ export default {
     align-items: center;
     flex-direction: column;
 
-    .toolbar {
+    .toolbar, .taskbar, .navbar {
       width: 100%;
       display: flex;
       justify-content: space-between;
 
-      .spacer {
-        flex: 1;
-      }
+      // .spacer {
+      //   flex: 1;
+      // }
 
       .base-button {
         pointer-events: all;
         &.disabled {
           pointer-events: none;
         }
-        &+.base-button {
-          margin-left: $spacing;
+      }
+
+      &.toolbar {
+        flex-direction: column;
+        align-items: flex-start;
+
+        .spacer {
+          height: $spacing * 1.5;
+        }
+
+        .base-button {
+          pointer-events: all;
+          &.disabled {
+            pointer-events: none;
+          }
+          &+.base-button {
+            margin-top: $spacing / 2;
+          }
         }
       }
 
-      &.navbar {
-        position: relative;
+      &.taskbar {
+        // position: relative;
 
         .task {
-          position: absolute;
-          z-index: 1;
+          // position: absolute;
+          // z-index: 1;
 
           .task-detail {
             display: block;

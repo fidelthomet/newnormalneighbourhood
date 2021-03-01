@@ -148,7 +148,7 @@ export default {
   watch: {
     step: {
       handler () {
-        if (this.step > this.maxStep && this.step !== 5) this.step = this.maxStep
+        // if (this.step > this.maxStep && this.step !== 5) this.step = this.maxStep
       },
       immediate: true
     }

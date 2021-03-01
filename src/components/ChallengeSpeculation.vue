@@ -11,15 +11,15 @@
                   <svg :viewBox="`0 0 ${imgWidth} ${imgHeight}`">
                     <!-- <path :style="{'stroke-width': details.sketchDimensions[0] * 0.02}" v-for="(path, i) in details.sketch" :key="i" :d="path"/> -->
                     <g class="paths">
-                      <path v-for="(p,i) in details.sketch.paths" :key="i" :d="p"/>
+                      <path v-for="(p,i) in details.sketch.paths" :key="i" :d="p.d || p" :class="[p.strokeWidth, p.color]"/>
                     </g>
-                    <g class="texts">
+                    <!-- <g class="texts">
                       <text v-for="(t, i) in details.sketch.texts" :key="i" :transform="t.transform">
                         <tspan v-for="(l, i) in t.rows" :key="i" :dy="i === 0 ? 36 : 36*1.25" x="0">
                           {{l}}
                         </tspan>
                       </text>
-                    </g>
+                    </g> -->
                   </svg>
                 </div>
               </transition>
@@ -118,6 +118,19 @@ export default {
           stroke-linejoin: round;
           stroke-width: 20;
           pointer-events: none;
+
+          &.s {
+            stroke-width: 12.5;
+          }
+          &.l {
+            stroke-width: 50;
+          }
+          &.white {
+            stroke: $color-white;
+          }
+          &.black {
+            stroke: $color-black;
+          }
         }
         .texts {
           text {

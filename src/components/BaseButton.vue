@@ -1,6 +1,6 @@
 <template>
   <component :is="is" :role="role" :to="to" class="base-button" ref="button"
-    :class="{disabled, tint, 'tint-icon': tintIcon, reverse, collapsed, 'no-label': $slots.default == null}"
+    :class="{disabled, tint, 'tint-icon': tintIcon, reverse, collapsed, round, 'no-label': $slots.default == null}"
     :style="(collapse && !collapsed || collapsed && !collapse) ? buttonDims : null">
     <span v-if="icon != null" class="icon">
       <svg viewBox="-10 -10 20 20">
@@ -33,11 +33,11 @@
               <polyline id="Path-38" stroke-linejoin="round" points="3 0 0 3 3 6"></polyline>
               <path d="M6,11 L7,11 C9.66666667,11 11,9.66666667 11,7 C11,4.33333333 9.66666667,3 7,3 L0,3" id="Path-39"></path>
             </g>
-            <g v-if="icon === 'draw'" transform="translate(-7, -7)">
+            <g v-if="icon === 'draw'" transform="rotate(90) translate(-7, -8)">
                 <polygon id="Path-46" fill="#FFFFFF" points="10 7 10 0 4 2 4 7"></polygon>
                 <polyline id="Path-47" points="-1.28563826e-12 14 1.5 8 3 7 11 7 12.5 8 14 14"></polyline>
             </g>
-            <g v-if="icon === 'erase'" transform="translate(-5, -7)">
+            <g v-if="icon === 'erase'" transform="rotate(90) translate(-5, -6)">
                 <polyline id="Path-47" points="1.98951966e-12 14 1.0658141e-13 1.5 1.5 -3.97903932e-12 8.5 -4.05009359e-12 10 1.5 10 14"></polyline>
                 <line x1="6.5" y1="9.5" x2="3.5" y2="12.5" id="Path"></line>
                 <polygon id="Path-3" fill="#FFFFFF" points="0.5 1 1.5 0 8.5 0 9.5 1 9.5 6 0.5 6"></polygon>
@@ -83,6 +83,10 @@ export default {
       default: null
     },
     collapse: {
+      type: Boolean,
+      default: false
+    },
+    round: {
       type: Boolean,
       default: false
     }
@@ -216,6 +220,11 @@ export default {
   &.collapsed {
     width: calc(1.25em + #{$spacing});
     height: calc(1.25em + #{$spacing});
+    overflow: hidden;
+  }
+
+  &.round {
+    border-radius: 50%;
     overflow: hidden;
   }
 
