@@ -134,6 +134,8 @@ export default {
 <style scoped lang="scss">
 @import "@/assets/style/global";
 .base-button {
+  border-radius: $spacing / 2;
+  overflow: hidden;
   display: flex;
   color: $color-white;
   transition: color $transition, width $transition, height $transition;
