@@ -26,14 +26,18 @@
         </base-button>
       </div>
       <div class="toolbar">
-        <base-button icon="draw" round @click="setMode('draw', 's')" :tint-icon="mode === 'draw' && strokeWidth === 's'" />
-        <base-button icon="draw" round @click="setMode('draw', 'm')" :tint-icon="mode === 'draw' && strokeWidth === 'm'" />
-        <base-button icon="draw" round @click="setMode('draw', 'l')" :tint-icon="mode === 'draw' && strokeWidth === 'l'" />
-        <base-button icon="erase" round @click="setMode('erase')" :tint-icon="mode === 'erase'" />
+        <div class="btn-group">
+          <base-button icon="pen-s" tool :color="color" @click="setMode('draw', 's')" :tint-icon="mode === 'draw' && strokeWidth === 's'" />
+          <base-button icon="pen-m" tool :color="color" @click="setMode('draw', 'm')" :tint-icon="mode === 'draw' && strokeWidth === 'm'" />
+          <base-button icon="pen-l" tool :color="color" @click="setMode('draw', 'l')" :tint-icon="mode === 'draw' && strokeWidth === 'l'" />
+          <base-button icon="erase" tool @click="setMode('erase')" :tint-icon="mode === 'erase'" />
+        </div>
         <div class="spacer"/>
-        <base-button icon="unknown" round @click="setColor('accent')" :tint-icon="color === 'accent'" :disabled="mode === 'erase'" />
-        <base-button icon="unknown" round @click="setColor('white')" :tint-icon="color === 'white'" :disabled="mode === 'erase'" />
-        <base-button icon="unknown" round @click="setColor('black')" :tint-icon="color === 'black'" :disabled="mode === 'erase'" />
+        <div class="btn-group">
+          <base-button icon="color" color="accent" tool @click="setColor('accent')" :tint-icon="color === 'accent'" :disabled="mode === 'erase'" />
+          <base-button icon="color" color="white" tool @click="setColor('white')" :tint-icon="color === 'white'" :disabled="mode === 'erase'" />
+          <base-button icon="color" color="black" tool @click="setColor('black')" :tint-icon="color === 'black'" :disabled="mode === 'erase'" />
+        </div>
       </div>
       <div class="navbar">
         <base-button :icon="actions.length === 0 ? 'camera' : 'undo'" @click="undo"/>
@@ -68,7 +72,7 @@ export default {
   data () {
     return {
       mode: 'draw',
-      strokeWidth: 25,
+      strokeWidth: 'm',
       color: 'accent',
       actions: [],
       transformBy: {
@@ -401,49 +405,49 @@ export default {
 
   }
 
-  .text-overlay {
-    // z-index: -1;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    padding: $page-padding;
-    padding-top: 25vh;
-    @include backdrop-blur;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity $transition;
-    &.show {
-      pointer-events: all;
-      opacity: 1;
-    }
+  // .text-overlay {
+  //   // z-index: -1;
+  //   position: absolute;
+  //   width: 100%;
+  //   height: 100%;
+  //   padding: $page-padding;
+  //   padding-top: 25vh;
+  //   @include backdrop-blur;
+  //   display: flex;
+  //   flex-direction: column;
+  //   align-items: center;
+  //   justify-content: space-between;
+  //   pointer-events: none;
+  //   opacity: 0;
+  //   transition: opacity $transition;
+  //   &.show {
+  //     pointer-events: all;
+  //     opacity: 1;
+  //   }
 
-    .text-buttons {
-      // display: flex;
-      // width: 100%;
-      align-self: flex-end;
-      // justify-content: flex-end;
-    }
+  //   .text-buttons {
+  //     // display: flex;
+  //     // width: 100%;
+  //     align-self: flex-end;
+  //     // justify-content: flex-end;
+  //   }
 
-    .text-input {
-      font-size: 64px;
-      font-weight: 700;
-      color: $color-accent;
-      outline: none;
-      text-align: center;
-      // white-space: nowrap;
+  //   .text-input {
+  //     font-size: 64px;
+  //     font-weight: 700;
+  //     color: $color-accent;
+  //     outline: none;
+  //     text-align: center;
+  //     // white-space: nowrap;
 
-      // position: absolute;
-      // top: 25vh;
+  //     // position: absolute;
+  //     // top: 25vh;
 
-      // ::v-deep {
-      //   font-size: 2rem;
-      // }
-    }
-  }
+  //     // ::v-deep {
+  //     //   font-size: 2rem;
+  //     // }
+  //   }
+  // }
 
   .edit {
     padding: $page-padding;
@@ -479,14 +483,22 @@ export default {
           height: $spacing * 1.5;
         }
 
+        .btn-group {
+          background: $color-deep-gray;
+          @include backdrop-blur {
+            background: transparentize($color-deep-gray, 0.7);
+          };
+          border-radius: $spacing / 2;
+        }
+
         .base-button {
           pointer-events: all;
           &.disabled {
             pointer-events: none;
           }
-          &+.base-button {
-            margin-top: $spacing / 2;
-          }
+          // &+.base-button {
+          //   // margin-top: $spacing / 2;
+          // }
         }
       }
 

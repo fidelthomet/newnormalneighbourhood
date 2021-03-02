@@ -1,6 +1,6 @@
 <template>
   <component :is="is" :role="role" :to="to" class="base-button" ref="button"
-    :class="{disabled, tint, 'tint-icon': tintIcon, reverse, collapsed, round, 'no-label': $slots.default == null}"
+    :class="{disabled, tint, 'tint-icon': tintIcon, reverse, collapsed, tool, 'no-label': $slots.default == null}"
     :style="(collapse && !collapsed || collapsed && !collapse) ? buttonDims : null">
     <span v-if="icon != null" class="icon">
       <svg viewBox="-10 -10 20 20">
@@ -33,11 +33,19 @@
               <polyline id="Path-38" stroke-linejoin="round" points="3 0 0 3 3 6"></polyline>
               <path d="M6,11 L7,11 C9.66666667,11 11,9.66666667 11,7 C11,4.33333333 9.66666667,3 7,3 L0,3" id="Path-39"></path>
             </g>
-            <g v-if="icon === 'draw'" transform="rotate(90) translate(-7, -8)">
-                <polygon id="Path-46" fill="#FFFFFF" points="10 7 10 0 4 2 4 7"></polygon>
+            <g v-if="icon === 'draw' || icon === 'pen-l'" class="pen" transform="rotate(90) translate(-7, -8)">
+                <polygon :class="color" id="Path-46" fill="#FFFFFF" points="10 7 10 0 4 2 4 7"></polygon>
                 <polyline id="Path-47" points="-1.28563826e-12 14 1.5 8 3 7 11 7 12.5 8 14 14"></polyline>
             </g>
-            <g v-if="icon === 'erase'" transform="rotate(90) translate(-5, -6)">
+            <g v-if="icon === 'pen-s'" class="pen" transform="translate(-7.000000, -7.000000)">
+                <polygon id="Path-46" fill="#FFFFFF" points="7 8 9 8 14 7 9 6 7 6"></polygon>
+                <polyline id="Path-47" points="3.01980663e-14 8.8817842e-16 6 1.5 7 3 7 11 6 12.5 2.66453526e-14 14"></polyline>
+            </g>
+            <g  v-if="icon === 'pen-m'" class="pen"  transform="translate(-7.000000, -7.000000)">
+                <polygon id="Path-46" fill="#FFFFFF" points="7 9 12 9 14 7 12 5 7 5"></polygon>
+                <polyline id="Path-47" points="3.01980663e-14 8.8817842e-16 6 1.5 7 3 7 11 6 12.5 2.66453526e-14 14"></polyline>
+            </g>
+            <g v-if="icon === 'erase'" class="erase" transform="rotate(90) translate(-5, -6)">
                 <polyline id="Path-47" points="1.98951966e-12 14 1.0658141e-13 1.5 1.5 -3.97903932e-12 8.5 -4.05009359e-12 10 1.5 10 14"></polyline>
                 <line x1="6.5" y1="9.5" x2="3.5" y2="12.5" id="Path"></line>
                 <polygon id="Path-3" fill="#FFFFFF" points="0.5 1 1.5 0 8.5 0 9.5 1 9.5 6 0.5 6"></polygon>
@@ -45,6 +53,10 @@
             </g>
             <g v-if="icon === 'sketch'" transform="translate(-19.000000, -20.000000)" stroke="#FFFFFF" stroke-width="2">
                 <path d="M15.7573593,26.2426407 L14.3431458,24.8284271 C13.4003367,23.8856181 13.4003367,22.942809 14.3431458,22 C15.2859548,21.057191 16.2287638,21.057191 17.1715729,22 L19.1715729,24 C20.1143819,24.942809 21.057191,24.942809 22,24 C22.942809,23.057191 22.942809,22.1143819 22,21.1715729 L18.5857864,17.7573593 C17.6429774,16.8145503 17.6429774,15.8717412 18.5857864,14.9289322 C19.5285955,13.9861231 20.4714045,13.9861231 21.4142136,14.9289322 L26.5,20" id="Path-4"></path>
+            </g>
+            <g  v-if="icon === 'color'" key="color" >
+              <circle r="7"/>
+              <circle r="4" class="fill" :class="color"/>
             </g>
           </transition-group>
         </g>
@@ -86,9 +98,13 @@ export default {
       type: Boolean,
       default: false
     },
-    round: {
+    tool: {
       type: Boolean,
       default: false
+    },
+    color: {
+      type: String,
+      default: 'accent'
     }
   },
   data () {
@@ -156,6 +172,7 @@ export default {
   }
 
   .icon {
+    // border-radius: $spacing;
     padding: $spacing / 2;
     background: $color-accent;
     transition: background $transition;
@@ -169,7 +186,7 @@ export default {
       height: 1.25em;
       transition: opacity $transition;
 
-      circle, path, line, polyline {
+      circle, path, line, polyline, polygon {
         fill: none;
         stroke: $color-white;
         stroke-width: 2;
@@ -181,6 +198,10 @@ export default {
         &.denied {
           stroke: $color-accent
         }
+      }
+
+      polygon {
+        fill: $color-white;
       }
     }
   }
@@ -197,7 +218,7 @@ export default {
   &.tint {
     .label {
       background: transparentize($color-accent, 0.2);
-      mix-blend-mode: hard-light;
+      // mix-blend-mode: hard-light;
       filter: saturate(2)
     }
   }
@@ -214,7 +235,7 @@ export default {
   &.tint-icon {
     .icon {
       background: transparentize($color-accent, 0.2);
-      mix-blend-mode: hard-light;
+      // mix-blend-mode: hard-light;
       filter: saturate(2)
     }
   }
@@ -225,9 +246,64 @@ export default {
     overflow: hidden;
   }
 
-  &.round {
-    border-radius: 50%;
-    overflow: hidden;
+  &.tool {
+    // border-radius: 50%;
+    backdrop-filter: none;
+    opacity: 0.7;
+    transition: opacity $transition;
+    // box-shadow: 0px 0px 2px $color-deep-gray;
+    .icon {
+      background: none;
+      transition: background $transition;
+      transform: scale(0.8);
+      border-radius: $spacing / 2;
+      // background: radial-gradient(closest-side, transparentize($color-deep-gray, 0.5), transparent);
+      svg {
+        transform: scale(1.25);
+
+        circle.fill {
+          stroke: none;
+          &.accent {
+            fill: $color-accent;
+          }
+          &.white {
+            fill: $color-white;
+          }
+          &.black {
+            fill: $color-black;
+          }
+        }
+
+        .pen polygon {
+          transition: fill $transition, stroke $transition;
+        }
+      }
+    }
+
+    &.tint-icon {
+      opacity: 1;
+      .icon {
+        background: transparentize($color-white, 0.6);
+      }
+      svg {
+        .erase line {
+          stroke: $color-accent;
+        }
+        .pen polygon {
+          fill: $color-accent;
+          stroke: $color-accent;
+          // &.accent {
+
+          // }
+          // &.white {
+          //   fill: $color-white;
+          // }
+          // &.black {
+          //   fill: $color-black;
+          // }
+        }
+      }
+    }
   }
 
   @keyframes rotate {
