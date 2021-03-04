@@ -1,7 +1,8 @@
 <template>
   <span class="contribute-chat-message" :class="{user}">
-    <span v-if="!typing">{{ msg }}</span>
-    <span v-else class="typing">
+    <base-button v-if="!typing" :icon="icon" :tint="user && icon == null" :tint-icon="user"
+      :anchor="icon ? null : user ? 'right' : 'left'">{{ msg }}</base-button>
+    <base-button v-else class="typing">
       <!-- <wbr /> -->
       <svg height="5" width="25">
         <g transform="translate(2.5 2.5)">
@@ -10,12 +11,14 @@
           <circle cx="20" r="2.5"/>
         </g>
       </svg>
-    </span>
+    </base-button>
   </span>
 </template>
 
 <script>
+import BaseButton from './BaseButton.vue'
 export default {
+  components: { BaseButton },
   name: 'contribute-chat-message',
   props: {
     msg: {
@@ -29,6 +32,10 @@ export default {
     user: {
       type: Boolean,
       default: false
+    },
+    icon: {
+      type: String,
+      default: null
     }
   }
 }
@@ -38,11 +45,13 @@ export default {
 @import "@/assets/style/global";
 .contribute-chat-message {
   max-width: 85%;
-  > span {
+  .base-button {
     hyphens: auto;
-    background: $color-deep-gray;
-    display: inline-block;
-    padding: $spacing / 2 $spacing;
+    align-self: flex-start;
+    display: inline-flex;
+
+    // display: inline-block;
+    // padding: $spacing / 2 $spacing;
     margin-bottom: $spacing / 2;
     &.typing {
       display: inline-flex;

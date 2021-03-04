@@ -1,6 +1,6 @@
 <template>
   <component :is="is" :role="role" :to="to" class="base-button" ref="button"
-    :class="{disabled, tint, 'tint-icon': tintIcon, reverse, collapsed, tool, 'no-label': $slots.default == null}"
+    :class="{disabled, tint, 'tint-icon': tintIcon, reverse, collapsed, tool, 'no-label': $slots.default == null, 'anchor-left': anchor === 'left', 'anchor-right': anchor === 'right'}"
     :style="(collapse && !collapsed || collapsed && !collapse) ? buttonDims : null">
     <span v-if="icon != null" class="icon">
       <svg viewBox="-10 -10 20 20">
@@ -109,6 +109,10 @@ export default {
     color: {
       type: String,
       default: 'accent'
+    },
+    anchor: {
+      type: String,
+      default: null
     }
   },
   data () {
@@ -224,7 +228,7 @@ export default {
   &.tint {
     .label {
       background: transparentize($color-accent, 0.2);
-      // mix-blend-mode: hard-light;
+      mix-blend-mode: hard-light;
       filter: saturate(2)
     }
   }
@@ -241,7 +245,7 @@ export default {
   &.tint-icon {
     .icon {
       background: transparentize($color-accent, 0.2);
-      // mix-blend-mode: hard-light;
+      mix-blend-mode: hard-light;
       filter: saturate(2)
     }
   }
@@ -310,6 +314,14 @@ export default {
         }
       }
     }
+  }
+
+  &.anchor-left {
+    border-radius: $spacing / 2 $spacing / 2 $spacing / 2 0;
+  }
+
+  &.anchor-right {
+    border-radius: $spacing / 2 $spacing / 2 0 $spacing / 2;
   }
 
   @keyframes rotate {

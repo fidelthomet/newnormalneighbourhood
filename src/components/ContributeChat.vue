@@ -1,7 +1,7 @@
 <template>
   <div class="contribute-chat">
     <transition name="fade-alt">
-      <base-button v-if="skip" class="skip" @click="$emit('next')" icon="next">skip intro</base-button>
+      <base-button v-if="skip" class="skip" @click="$emit('next')" icon="next">Skip</base-button>
     </transition>
     <div class="messages">
       <template v-for="(m, i) in messages" :key="i">
@@ -9,7 +9,7 @@
       </template>
       <template v-for="(m, i) in challenge.chat.filter((m, i) => i === progress)" :key="i">
         <div v-if="m[0]" class="options">
-          <contribute-chat-message v-for="(m2, i2) in m.filter((m2, i2) => i2 !== 0)" :key="i2" :msg="`→ ${m2[0]}`" user @click="input(m2)"/>
+          <contribute-chat-message v-for="(m2, i2) in m.filter((m2, i2) => i2 !== 0)" :key="i2" :msg="m2[0]" icon="next" user @click="input(m2)"/>
         </div>
         <contribute-chat-message v-else typing/>
       </template>
