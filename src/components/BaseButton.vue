@@ -165,6 +165,7 @@ export default {
   @include backdrop-blur;
   .label {
     transition: background $transition;
+    background: transparentize($color-deep-gray, 0.7);
     @include supports-backdrop-blur {
       background: transparentize($color-deep-gray, 0.7);
     };
@@ -178,8 +179,9 @@ export default {
   .icon {
     // border-radius: $spacing;
     padding: $spacing / 2;
-    background: $color-accent;
+    // background: $color-accent;
     transition: background $transition;
+    background: transparentize($color-white, 0.7);
     @include supports-backdrop-blur {
       background: transparentize($color-white, 0.7);
     }
