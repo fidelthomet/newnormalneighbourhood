@@ -1,7 +1,7 @@
 <template>
   <div class="contribute subpage" :style="{height: `${height}px`}">
     <base-image :img="photo || challenge?.img" :blur="step < 2 || step === 3 || step === 5" :tint="step === 0 || step === 3 || step === 5" showSlot>
-      <contribute-camera v-if="!disableCamera && (step === 1 || step === 2)" ref="camera" @next="step = 3" :challenge="challenge"/>
+      <contribute-camera v-if="!disableCamera && (step === 1 || step === 2)" ref="camera" @next="step = maxStep === 4 ? 4 : 3" :challenge="challenge"/>
     </base-image>
     <base-progress :progress="step" :items="5"/>
     <div class="content" :class="{blend: step !== 2}">
@@ -40,7 +40,7 @@
           <div class="btn">
             <base-button icon="camera" @click="another">Make another proposal</base-button>
           </div>
-          </div>
+        </div>
       </transition-group>
     </div>
   </div>
@@ -92,7 +92,7 @@ export default {
       },
       set (step) {
         this.maxStep = Math.max(step, this.maxStep)
-        this.$router.push({ name: 'speculate', params: { challenge: this.$route.params.challenge, step } })
+        this.$router.replace({ name: 'speculate', params: { challenge: this.$route.params.challenge, step } })
         // return this.$route.params.step
       }
     }
@@ -106,6 +106,7 @@ export default {
   // },
   methods: {
     ...mapActions('data', ['wipe']),
+    ...mapActions('device', ['stopCamera']),
     capture () {
       this.$refs.camera.capture()
     },
@@ -131,6 +132,12 @@ export default {
         }
       })
       this.wipe()
+      this.stopCamera()
+    },
+    close () {
+      this.$router.push({ name: 'Home' })
+      this.wipe()
+      this.stopCamera()
     },
     another () {
       this.step = 2
@@ -148,7 +155,7 @@ export default {
   watch: {
     step: {
       handler () {
-        // if (this.step > this.maxStep && this.step !== 5) this.step = this.maxStep
+        if (this.step > this.maxStep && this.step !== 5) this.step = this.maxStep
       },
       immediate: true
     }
@@ -230,7 +237,7 @@ export default {
       justify-content: flex-start;
       // align-items: center;
       padding: $page-padding;
-      max-width: $extra-narrow;
+      // max-width: $extra-narrow;
 
       .btn {
         align-self: flex-start;
@@ -246,6 +253,7 @@ export default {
 
       h2 {
         margin: $spacing * 4 0 $spacing;
+        max-width: $narrow;
       }
       p {
         margin-bottom: $spacing;

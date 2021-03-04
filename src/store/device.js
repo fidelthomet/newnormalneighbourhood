@@ -57,6 +57,12 @@ export default {
         commit('set', { cameraError: error, cameraRequested: false })
       })
     },
+    async stopCamera ({ commit, state }) {
+      state.camera.getTracks().forEach((track) => {
+        track.stop()
+      })
+      commit('set', { camera: null, cameraRequested: false })
+    },
     async allowLocation ({ commit }) {
       commit('set', { locationRequested: true })
       var options = {
