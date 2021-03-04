@@ -5,13 +5,10 @@
         {{challenge?.permissions}}
       </p>
       <p>
-        To participate in this speculation you’ll need about 5 minutes and to be outside.
+        To make a proposal open this website on your phone and go for a walk. It will take about 5 minutes.
       </p>
       <p>
-        If you haven’t already, open this website on your phone and head outdoors!
-      </p>
-      <p>
-        You’ll also need to grant access to your geolocation and camera before continuing
+        Before we can get started you’ll also need to allow access to your location and camera.
       </p>
       <div class="button-group">
         <base-button :icon="statusLocation" @click="allowLocation">Allow location access</base-button>
@@ -19,7 +16,7 @@
         <base-button icon="next" :disabled="!permissionsGranted" @click="$emit('next')">Enter the New Normal</base-button>
       </div>
       <p class="small-print">
-        Proposals will be published on this website anonymously under the public domain. <router-link to="/privacy">learn more</router-link>
+        Your proposal will be published anonymously and&nbsp;under the public domain. <router-link to="/privacy">Learn more</router-link>
       </p>
     </div>
   </div>

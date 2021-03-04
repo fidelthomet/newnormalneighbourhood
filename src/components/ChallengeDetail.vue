@@ -5,8 +5,8 @@
       <div class="detail">
         <h2>{{challenge.title}}</h2>
         <div class="button-group">
-          <base-button tint :to="`/${challenge.id}/speculate`">speculate</base-button>
-          <base-button :to="`/${challenge.id}/${speculations[0]?._id}`">explore</base-button>
+          <base-button tint :to="`/${challenge.id}/speculate`">Make Proposal</base-button>
+          <base-button :to="`/${challenge.id}/${speculations[0]?._id}`">Explore</base-button>
         </div>
         <div class="description">
           {{challenge.description}}

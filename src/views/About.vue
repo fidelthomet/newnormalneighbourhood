@@ -6,7 +6,15 @@
       <router-link to="about">about</router-link> <router-link to="privacy">privacy</router-link>
     </nav>
     <h2>About</h2>
-    todo
+    <p>
+      New Normal Neighbourhood is a thesis project by Fidel Thomet in the Urban Futures masters programme at the University of Applied Sciences Potsdam.
+    </p>
+    <p>
+      The thesis explores using the notion of the New Normal for situated speculations on future crises. The website allows visitors to make proposals for crisis-responses for their own neighbourhoods. And to add them to a growing collection of speculations, which is under the public domain and can be shared, reused, and remixed in any way.
+    </p>
+    <p>
+      If you have any questions or feedback, please reach out on Twitter: <a href="https://twitter.com/fidelthomet" rel="noreferrer">@fidelthomet</a> or per Mail: <a href="mailto:nnn@ft0.ch">nnn@ft0.ch</a>
+    </p>
   </div>
 </template>
 <style lang="scss" scoped>
@@ -38,6 +46,18 @@
 
   h2 {
     margin-block-end: $spacing;
+  }
+
+  p + p {
+    margin-top: $spacing;
+  }
+
+  p {
+    a {
+      hyphens: none;
+      color: inherit;
+      text-decoration: underline;
+    }
   }
 }
 </style>

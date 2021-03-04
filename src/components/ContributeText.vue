@@ -31,7 +31,7 @@
       <p contenteditable placeholder="What can be done to adapt and mitigate risks?" @input="input('opportunity', $event)"/> -->
     </div>
     <div class="bottom-nav">
-      <base-button icon="next" :disabled="!valid" @click="$emit('next')">next</base-button>
+      <base-button icon="next" :disabled="!valid" @click="$emit('next')">Next</base-button>
     </div>
   </div>
 </template>

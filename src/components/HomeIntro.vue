@@ -7,7 +7,7 @@
     </nav>
     <h1>New&nbsp;Normal<br>Neighbourhood</h1>
     <p class="no-hyphens">
-      A toolkit for finding speculative responses to&nbsp;future crises
+      A toolkit for speculative responses<br>to living in permanent crises
     </p>
     <div class="arrow">
       ↓

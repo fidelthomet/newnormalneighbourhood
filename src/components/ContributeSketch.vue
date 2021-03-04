@@ -42,7 +42,7 @@
       <div class="navbar">
         <base-button :icon="actions.length === 0 ? 'camera' : 'undo'" @click="undo"/>
         <div class="spacer"/>
-        <base-button :icon="publishing ? 'requested' : 'publish'" reverse :tint-icon="paths.length > 0" :disabled="paths.length === 0" @click="publish">publish</base-button>
+        <base-button :icon="publishing ? 'requested' : 'publish'" reverse :tint-icon="paths.length > 0" :disabled="paths.length === 0" @click="publish">Publish</base-button>
       </div>
     </div>
     <!-- <div class="text-overlay" :class="{ show: mode === 'type'}">
@@ -316,7 +316,7 @@ export default {
     // },
     undo () {
       if (this.actions.length > 0) this.actions.pop()
-      else this.$router.go(-1)
+      else this.$emit('retake')
     },
     async publish () {
       this.publishing = true

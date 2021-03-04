@@ -23,24 +23,24 @@
           </div>
         </div>
         <contribute-text v-if="step === 3" key="text" @next="step = 4"/>
-        <contribute-sketch v-if="step === 4" key="sketch" @next="thanks"/>
+        <contribute-sketch v-if="step === 4" key="sketch" @next="thanks" @retake="step = 2"/>
         <div v-if="step === 5" key="thanks" class="thanks">
-          <base-button class="close" @click="$router.push({name: 'Home'})" icon="close"/>
-          <h2>Thank you for speculating!</h2>
-          <p>We've added your submission<br>to our archive</p>
+          <base-button class="close" @click="close" icon="close"/>
+          <h2>Thank you for your proposal!</h2>
+          <p>It’s now part of our collection</p>
+          <div class="btn">
+            <base-button icon="next" @click="explore">Explore the archive</base-button>
+          </div>
           <div class="btn share">
             <transition name="fade-alt-2">
-              <base-button v-if="!copied" icon="publish" key="share" @click="share">Share your speculation</base-button>
+              <base-button v-if="!copied" icon="link" key="share" @click="share">Copy link to proposal</base-button>
               <base-button v-else icon="allowed" key="copied">Link copied to clipboard</base-button>
             </transition>
           </div>
           <div class="btn">
-            <base-button icon="next" @click="explore">Explore the archive</base-button>
+            <base-button icon="camera" @click="another">Make another proposal</base-button>
           </div>
-          <div class="btn">
-            <base-button icon="undo" @click="another">Make another speculation</base-button>
           </div>
-        </div>
       </transition-group>
     </div>
   </div>
