@@ -36,7 +36,9 @@ export default {
           .then(d => d.map(challenge => ({
             ...challenge,
             img: `${files}/${challenge.img}`
-          })).sort((a, b) => a.order > b.order))
+          })).sort((a, b) => {
+            return a.order - b.order
+          }))
       })
     },
     async fetchSpeculations ({ commit }) {
