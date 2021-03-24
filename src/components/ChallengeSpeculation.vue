@@ -2,7 +2,7 @@
   <div class="challenge-speculation">
       <!-- <div class="bg" :style="{'background-image': `url(${challenge.img})` }"/> -->
 
-          <base-image :blur="step === 1" :tint="step === 1" showSlot>
+          <base-image :blur="step === 0" :tint="step === 0" showSlot>
             <div class="img-wrapper">
               <!-- <div class="img" :style="{'background-image': `url(${photo})`}"/> -->
               <img class="img" :src="speculation?.img">
@@ -26,9 +26,9 @@
             </div>
           </base-image>
           <transition name="fade">
-            <div class="text-layer" v-if="step === 1">
-              <h2>{{details.title}}</h2>
-              <p>{{details.description}}</p>
+            <div class="text-layer" v-if="step === 0 && details != null">
+              <h2>{{details?.title}}</h2>
+              <p>{{details?.description}}</p>
             </div>
           </transition>
       <!-- <div class="detail">
