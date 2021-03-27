@@ -38,10 +38,11 @@ h2 {
   // font-size: 1em;
   font-weight: 700;
   // text-transform: uppercase;
+  max-width: $narrow;
 }
 
 p {
-  max-width: $extra-narrow;
+  max-width: $narrow;
   hyphens: auto;
 
   &.no-hyphens {

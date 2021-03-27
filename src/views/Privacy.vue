@@ -3,7 +3,7 @@
     <nav class="no-hyphens">
       <router-link :to="{name:'Home'}">home</router-link>
       <div class="spacer"/>
-      <router-link to="about">about</router-link>
+      <router-link to="about">background</router-link>
       <router-link to="privacy">privacy</router-link>
     </nav>
     <h2>Privacy</h2>
@@ -39,7 +39,6 @@
     }
 
     a {
-      opacity: 0.5;
       color: $color-accent-dark;
 
       &+a {

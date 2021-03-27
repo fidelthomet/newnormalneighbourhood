@@ -1,6 +1,9 @@
 <template>
   <div class="contribute-permissions">
     <div class="permissions">
+      <svg class="icon" width="40" height="30" viewBox="0 0 40 30">
+        <path :d="challenge.icon"/>
+      </svg>
       <p>
         {{challenge?.permissions}}
       </p>
@@ -59,6 +62,14 @@ export default {
     flex-direction: column;
     padding: $page-padding;
     max-width: $extra-narrow;
+
+    .icon {
+      margin-top: $spacing * 1.5;
+      margin-bottom: $spacing / 2;
+      path {
+        fill: $color-white;
+      }
+    }
     p {
       margin-bottom: $spacing;
 

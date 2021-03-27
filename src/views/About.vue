@@ -3,17 +3,17 @@
     <nav class="no-hyphens">
       <router-link :to="{name:'Home'}">home</router-link>
       <div class="spacer"/>
-      <router-link to="about">about</router-link> <router-link to="privacy">privacy</router-link>
+      <router-link to="about">background</router-link> <router-link to="privacy">privacy</router-link>
     </nav>
-    <h2>About</h2>
+    <h2>Background</h2>
     <p>
-      New Normal Neighbourhood is a thesis project by Fidel Thomet in the Urban Futures masters programme at the University of Applied Sciences Potsdam.
+      New Normal Neighbourhood is a research and thesis project by <a href="https://fidel.computer">Fidel Thomet</a> in the Urban Futures masters programme at the University of Applied Sciences Potsdam.
     </p>
     <p>
       The thesis explores using the notion of the New Normal for situated speculations on future crises. The website allows visitors to make proposals for crisis-responses for their own neighbourhoods. And to add them to a growing collection of speculations, which is under the public domain and can be shared, reused, and remixed in any way.
     </p>
     <p>
-      If you have any questions or feedback, please reach out on Twitter: <a href="https://twitter.com/fidelthomet" rel="noreferrer">@fidelthomet</a> or per Mail: <a href="mailto:nnn@ft0.ch">nnn@ft0.ch</a>
+      If you have any questions or feedback, please reach out on Twitter: <a href="https://twitter.com/fidelthomet" rel="noreferrer">@fidelthomet</a> or per mail: <a href="mailto:nnn@ft0.ch">nnn@ft0.ch</a>
     </p>
   </div>
 </template>
@@ -35,7 +35,6 @@
     }
 
     a {
-      opacity: 0.5;
       color: $color-accent-dark;
 
       &+a {
