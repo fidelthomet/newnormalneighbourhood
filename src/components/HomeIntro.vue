@@ -7,12 +7,12 @@
     </nav>
     <h1>New&nbsp;Normal<br>Neighbourhood</h1>
     <p class="no-hyphens">
-      A place to propose local responses for times of permanent crisis
+      A place to propose local responses for&nbsp;times of permanent crisis
     </p>
 
     <p class="no-hyphens smaller">
-      This site is a research project which explores the notion of the new normal for situated speculations on future crises.
-      <router-link to="about">Learn more.</router-link>
+      This site is a research project which explores the notion of the new normal for situated speculations on future crises
+      <router-link to="about">→ learn more</router-link>
     </p>
     <div class="arrow">
       ↓
@@ -47,17 +47,16 @@ export default {
   }
 
   p.smaller {
-    font-size: 0.8em;
-    // a {
+    a {
       color: $color-accent-dark;
-    // }
+    }
   }
 
   p {
     a {
       hyphens: none;
       color: inherit;
-      text-decoration: underline;
+      // text-decoration: underline;
     }
   }
 
