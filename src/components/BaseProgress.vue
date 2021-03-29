@@ -1,6 +1,6 @@
 <template>
   <div class="base-progress">
-    <div class="progress" v-for="i in items" :key="i">
+    <div class="progress" v-for="i in items" :key="i" :style="{flex: proportions ? proportions[i - 1] : null}">
       <div v-if="i <= flooredProgress" class="sub-progress"/>
       <div v-if="i === flooredProgress + 1" class="sub-progress" :style="{width: `${progress % 1 * 100}%`}"/>
     </div>
@@ -18,6 +18,10 @@ export default {
     progress: {
       type: Number,
       default: 2.4
+    },
+    proportions: {
+      type: Array,
+      default: null
     }
   },
   computed: {

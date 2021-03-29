@@ -8,6 +8,8 @@
         :items="speculation == null ? 1 : 3"
         :prevItems="speculationIndex === 0 ? 1 : 3"
         swipeSkip
+        :durations="[7800, 2600, 5200]"
+        :proportions="[3, 1, 2]"
         @next="next" @prev="prev">
         <template v-slot="{ step }">
           <router-view v-if="challenge" v-slot="{ Component }">

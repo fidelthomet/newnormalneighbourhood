@@ -1,6 +1,6 @@
 <template>
   <div class="base-gallery">
-    <base-progress :items="items" :progress="progress" ref="progress"/>
+    <base-progress :items="items" :progress="progress" ref="progress" :proportions="proportions"/>
     <div class="interaction-layer">
       <div class="back" @click="back" @touchstart="stop" @touchend="start"/>
       <div class="next" @click="next" @touchstart="stop" @touchend="start"/>
@@ -30,13 +30,22 @@ export default {
     swipeSkip: {
       type: Boolean,
       default: false
+    },
+    durations: {
+      type: [Array],
+      default () {
+        return [9000]
+      }
+    },
+    proportions: {
+      type: Array,
+      default: null
     }
   },
   data () {
     return {
       progress: 0,
       stopped: false,
-      duration: 6000,
       time: null,
       animation: null,
       swipeStart: null,
@@ -46,6 +55,9 @@ export default {
   computed: {
     step () {
       return Math.floor(this.progress)
+    },
+    duration () {
+      return this.durations[this.step % this.durations.length]
     }
   },
   mounted () {
