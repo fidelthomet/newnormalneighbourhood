@@ -39,6 +39,7 @@ export default {
   padding: $spacing;
   width: 100%;
   display: flex;
+  // background: $color-accent;
 
   .progress {
     background: transparentize($color-white, $amount: 0.7);
@@ -47,6 +48,7 @@ export default {
     height: 3px;
     width: 100%;
     margin-right: $spacing / 2;
+    box-shadow: 0px 0px 50px $color-black;
     &:last-child {
       margin-right: 0;
     }
