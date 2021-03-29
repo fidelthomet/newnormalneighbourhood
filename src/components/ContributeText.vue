@@ -11,14 +11,14 @@
     <div class="form">
       <div class="label">
         <span>Aim</span>
-        <span class="counter" :class="{warn: title.length > 40}">{{title.length}}/40</span>
+        <span class="counter" :class="{warn: title.length > 50}">{{title.length}}/50</span>
       </div>
-      <h2 :class="{warn: title.length > 40}" ref="title" contenteditable placeholder="What do you want to achieve?" @input="input('title', $event)"/>
+      <h2 :class="{warn: title.length > 50}" ref="title" contenteditable placeholder="What do you want to achieve?" @input="input('title', $event)"/>
       <div class="label">
         <span>Proposal</span>
-        <span class="counter" :class="{warn: description.length > 160}">{{description.length}}/160</span>
+        <span class="counter" :class="{warn: description.length > 250}">{{description.length}}/250</span>
       </div>
-      <p :class="{warn: description.length > 160}" ref="description" contenteditable placeholder="How are you going to achieve that? What will need to change?" @input="input('description', $event)"/>
+      <p :class="{warn: description.length > 250}" ref="description" contenteditable placeholder="How are you going to achieve that? What will need to change?" @input="input('description', $event)"/>
       <!-- <div class="label">
         <span>Proposal</span>
         <span class="counter" :class="{warn: title.length > 100}">{{description.length}}/100</span>
@@ -59,7 +59,7 @@ export default {
   computed: {
     valid () {
       const { title, description } = this
-      return title.length > 0 && title.length <= 25 && description.length > 0 && description.length <= 150 // && opportunity.length > 0 && opportunity.length <= 150
+      return title.length > 0 && title.length <= 50 && description.length > 0 && description.length <= 250 // && opportunity.length > 0 && opportunity.length <= 150
     },
     ...mapStateReactive('data', ['title', 'description'])
   },
