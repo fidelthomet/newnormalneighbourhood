@@ -4,7 +4,10 @@
       {{challenge?.title}}
     </challenge-intro>
     <challenge-detail :challenge="challenge"/> -->
-      <base-gallery :items="speculation == null ? 1 : 3"
+      <base-gallery
+        :items="speculation == null ? 1 : 3"
+        :prevItems="speculationIndex === 0 ? 1 : 3"
+        swipeSkip
         @next="next" @prev="prev">
         <template v-slot="{ step }">
           <router-view v-if="challenge" v-slot="{ Component }">
@@ -41,13 +44,20 @@ export default {
     this.fetchSpeculations()
   },
   computed: {
-    ...mapState('api', ['challenges', 'speculations']),
+    ...mapState('api', ['challenges']),
     ...mapState('device', ['height']),
+    speculations () {
+      return this.$store.getters['api/speculations'](this.challenge.id)
+    },
     challenge () {
       return this.challenges?.find(({ id }) => id === this.$route.params.challenge)
     },
     speculation () {
       return this.speculations?.find(({ _id }) => _id === this.$route.params.speculation)
+    },
+    speculationIndex () {
+      if (!this.speculation) return null
+      return this.speculations.slice().findIndex(s => s._id === this.speculation._id)
     }
   },
   methods: {
@@ -56,21 +66,21 @@ export default {
       this.slideLeft = true
       if (this.speculation == null) {
         const speculation = this.$store.getters['api/speculations'](this.challenge.id)[0]
-        this.$router.push({ name: 'speculation', params: { challenge: this.challenge.id, speculation: speculation._id } })
+        this.$router.replace({ name: 'speculation', params: { challenge: this.challenge.id, speculation: speculation._id } })
         return
       }
       const index = this.speculations.findIndex(s => s._id === this.speculation._id)
       const speculation = this.speculations.find((s, i) =>
         s.scenario === this.challenge.id && i > index
       )
-      if (speculation == null) this.$router.push({ name: 'scenario', params: { challenge: this.challenge.id } })
-      else this.$router.push({ name: 'speculation', params: { challenge: this.challenge.id, speculation: speculation._id } })
+      if (speculation == null) this.$router.replace({ name: 'scenario', params: { challenge: this.challenge.id } })
+      else this.$router.replace({ name: 'speculation', params: { challenge: this.challenge.id, speculation: speculation._id } })
     },
     prev () {
       this.slideLeft = false
       if (this.speculation == null) {
         const speculation = this.$store.getters['api/speculations'](this.challenge.id).reverse()[0]
-        this.$router.push({ name: 'speculation', params: { challenge: this.challenge.id, speculation: speculation._id } })
+        this.$router.replace({ name: 'speculation', params: { challenge: this.challenge.id, speculation: speculation._id } })
         return
       }
       const index = this.speculations.slice().reverse().findIndex(s => s._id === this.speculation._id)
@@ -78,9 +88,8 @@ export default {
         s.scenario === this.challenge.id && i > index
       )
       if (speculation == null) {
-        console.log('expected')
-        this.$router.push({ name: 'scenario', params: { challenge: this.challenge.id } })
-      } else this.$router.push({ name: 'speculation', params: { challenge: this.challenge.id, speculation: speculation._id } })
+        this.$router.replace({ name: 'scenario', params: { challenge: this.challenge.id } })
+      } else this.$router.replace({ name: 'speculation', params: { challenge: this.challenge.id, speculation: speculation._id } })
     }
   }
 }

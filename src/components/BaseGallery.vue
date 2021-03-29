@@ -1,9 +1,9 @@
 <template>
   <div class="base-gallery">
-    <base-progress :items="items" :progress="progress"/>
+    <base-progress :items="items" :progress="progress" ref="progress"/>
     <div class="interaction-layer">
-      <div class="back" @click="back" @touchstart="stopp" @touchend="start"/>
-      <div class="next" @click="next" @touchstart="stopp" @touchend="start"/>
+      <div class="back" @click="back" @touchstart="stop" @touchend="start"/>
+      <div class="next" @click="next" @touchstart="stop" @touchend="start"/>
     </div>
     <slot :progress="progress" :step="step"/>
   </div>
@@ -19,7 +19,15 @@ export default {
       type: Number,
       default: 4
     },
+    prevItems: {
+      type: Number,
+      default: null
+    },
     pause: {
+      type: Boolean,
+      default: false
+    },
+    swipeSkip: {
       type: Boolean,
       default: false
     }
@@ -30,7 +38,9 @@ export default {
       stopped: false,
       duration: 6000,
       time: null,
-      animation: null
+      animation: null,
+      swipeStart: null,
+      swipeStartTime: null
     }
   },
   computed: {
@@ -60,18 +70,49 @@ export default {
     back () {
       this.progress = (this.step + this.items - 1) % this.items
       if (this.progress === this.items - 1) {
+        this.progress = (this.prevItems || this.items) - 1
         this.$emit('prev')
-        this.progress = 0
       }
+    },
+    backSkip () {
+      this.progress = 0
+      this.$emit('prev')
     },
     next () {
       this.progress = (this.step + 1) % this.items
       if (this.progress === 0) this.$emit('next')
     },
-    stopp () {
+    nextSkip () {
+      this.progress = 0
+      this.$emit('next')
+    },
+    stop (e) {
+      this.swipeStart = e.touches?.[0]?.clientX
+      this.swipeStartTime = new Date().getTime()
       this.stopped = true
     },
-    start () {
+    start (e) {
+      const swipeStop = e.changedTouches?.[0]?.clientX
+      const swipeStopTime = new Date().getTime()
+      const { swipeStart, swipeStartTime } = this
+      const swipeDelta = swipeStop - swipeStart
+      const swipeTimeDelta = swipeStopTime - swipeStartTime
+      if (swipeTimeDelta < 500 && Math.abs(swipeDelta) > 50) {
+        if (this.swipeSkip) {
+          if (swipeDelta < 0) {
+            this.nextSkip()
+          } else {
+            this.backSkip()
+          }
+        } else {
+          if (swipeDelta < 0) {
+            this.next()
+          } else {
+            this.back()
+          }
+        }
+        // this.$refs.progress
+      }
       this.stopped = false
       this.time = null
       requestAnimationFrame(this.animate)

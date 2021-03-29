@@ -14,7 +14,6 @@ export default {
   },
   getters: {
     speculations: (state) => (scenario) => {
-      // if (state.storage === true) return 'allowed'
       return state.speculations.filter(s => s.scenario === scenario)
     }
   },
