@@ -87,6 +87,7 @@ export default {
   width: 100%;
   height: 100vh;
   position: relative;
+  user-select: none;
 
   .interaction-layer, .base-progress {
     z-index: 5;
