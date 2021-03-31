@@ -12,7 +12,7 @@
         </p>
         <div class="button-group">
           <template v-if="!challenge.soon">
-            <base-button tint :to="`/${challenge.id}/speculate`">Make Proposal</base-button>
+            <base-button tint :to="`/${challenge.id}/speculate`">Add Proposal</base-button>
             <base-button :to="`/${challenge.id}/${speculations[0]?._id}`">Gallery</base-button>
           </template>
           <base-button v-else tint>Coming Soon</base-button>

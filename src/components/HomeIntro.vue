@@ -11,8 +11,8 @@
     </p>
 
     <p class="no-hyphens smaller">
-      This site is a research project which explores the notion of the new normal for situated speculations on future crises
-      <router-link to="about">→ learn more</router-link>
+      This site is part of a research project on using situated speculative design to explore new normals of potential future crises at the neighbourhood level
+      <router-link to="about">→&nbsp;learn&nbsp;more</router-link>
     </p>
     <div class="arrow">
       ↓

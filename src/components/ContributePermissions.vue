@@ -8,7 +8,7 @@
         {{challenge?.permissions}}
       </p>
       <p>
-        To make a proposal open this website on your phone and go for a walk. It will take about 5 minutes.
+        Making a proposal works best on your phone and if you're outside. It will take about 5 minutes.
       </p>
       <p>
         Before we can get started you’ll also need to allow access to your location and camera.
